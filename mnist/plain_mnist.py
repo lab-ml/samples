@@ -11,6 +11,8 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
+import tensorflow as tf
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -49,6 +51,8 @@ class Configs:
     train_loader: torch.utils.data.DataLoader
     test_loader: torch.utils.data.DataLoader
 
+    summary_writer = tf.summary.create_file_writer('logs/mnist')
+
     model: nn.Module
 
     learning_rate: float = 0.01
@@ -67,13 +71,16 @@ class Configs:
             self.optimizer.step()
 
             if batch_idx % self.train_log_interval == 0:
+                with self.summary_writer.as_default():
+                    tf.summary.scalar('train_loss', loss.item(), step=epoch)
+
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx * len(data),
                                                                                len(self.train_loader.dataset),
                                                                                100. * batch_idx / len(
                                                                                    self.train_loader),
                                                                                loss.item()))
 
-    def test(self):
+    def test(self, epoch):
         self.model.eval()
         test_loss = 0
         correct = 0
@@ -87,15 +94,20 @@ class Configs:
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
         test_loss /= len(self.test_loader.dataset)
+        test_accuracy = 100. * correct / len(self.test_loader.dataset)
+
+        with self.summary_writer.as_default():
+            tf.summary.scalar('test_loss', test_loss, step=epoch)
+            tf.summary.scalar('test_accuracy', test_accuracy, step=epoch)
+
         print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct,
                                                                                      len(self.test_loader.dataset),
-                                                                                     100. * correct / len(
-                                                                                         self.test_loader.dataset)))
+                                                                                     test_accuracy))
 
     def run(self):
         for epoch in range(1, self.epochs + 1):
             self.train(epoch)
-            self.test()
+            self.test(epoch)
 
         if self.is_save_models:
             torch.save(self.model.state_dict(), "mnist_cnn.pt")
