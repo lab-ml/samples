@@ -1,0 +1,15 @@
+comment: ''
+commit: 72907d5280aa7756a41be000cf5f9f2cb1f01d11
+commit_message: Initial commit
+is_dirty: true
+load_run: null
+notes: ''
+python_file: /github/labs/samples/mnist/mnist_lab_v1.py
+start_step: 0
+tags:
+- lab
+- v1
+- mnist
+trial_date: '2020-05-04'
+trial_time: '19:56:47'
+uuid: 493722348e1311ea900eacde48001122
