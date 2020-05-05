@@ -7,7 +7,7 @@ import torch.nn.functional as F
 
 from lab import experiment
 from lab.helpers.pytorch.datasets.cifar10 import CIFAR10Configs
-from samples.mnist_loop import Configs as MNISTExperimentConfigs
+from pytorch.mnist.lab_latest import Configs as MNISTExperimentConfigs
 
 
 class Net(nn.Module):
