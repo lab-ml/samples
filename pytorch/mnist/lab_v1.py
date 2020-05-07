@@ -115,7 +115,7 @@ def cuda(c: Configs):
             return torch.device(f"cuda:{c.cuda_device}")
         else:
             logger.log(f"Cuda device index {c.cuda_device} higher than "
-                      f"device count {torch.cuda.device_count()}", Text.warning)
+                      f"device count {torch.cuda.device_count()}", logger.Text.warning)
             return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
 
@@ -173,7 +173,7 @@ def loop_step(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite', 'tensorboard'})
+    experiment.create(name='mnist_v1', writers={'sqlite', 'tensorboard'})
     experiment.calculate_configs(conf,
                                  {'optimizer': 'adam_optimizer'},
                                  ['set_seed', 'run'])

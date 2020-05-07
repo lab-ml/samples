@@ -153,7 +153,7 @@ def loop_step(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite'})
+    experiment.create(name='mnist_indexed_logs', writers={'sqlite'})
     conf.optimizer = 'adam_optimizer'
     experiment.calculate_configs(conf,
                                  {},

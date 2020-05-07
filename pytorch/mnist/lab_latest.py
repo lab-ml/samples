@@ -74,7 +74,7 @@ def adam_optimizer(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite', 'tensorboard'})
+    experiment.create(name='mnist_latest', writers={'sqlite', 'tensorboard'})
     conf.optimizer = 'adam_optimizer'
     experiment.calculate_configs(conf,
                                  {},

@@ -216,7 +216,7 @@ def set_seed(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite'})
+    experiment.create(name='mnist_configs', writers={'sqlite'})
     conf.optimizer = 'sgd_optimizer'
     experiment.calculate_configs(conf,
                                  None,

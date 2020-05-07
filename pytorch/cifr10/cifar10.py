@@ -47,7 +47,7 @@ def cifar10_model(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite'})
+    experiment.create(name='cifar_10', writers={'sqlite'})
     conf.optimizer = 'adam_optimizer'
     experiment.calculate_configs(conf,
                                  {},
