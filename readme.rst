@@ -33,7 +33,7 @@ To Run the RNN Example
 
     make rnn
 
-To Run the Cifr10 Example
+To Run the cifr10 Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
@@ -41,12 +41,26 @@ To Run the Cifr10 Example
     make cifr10
 
 
-To Run the all Mnist Example
+To Run All the mnist Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make mnist
+
+.. note::
+
+   *To run each mnist example*
+
+   .. code-block:: bash
+
+    make mnist_configs
+    make mnist_hyperparam_tuning
+    make mnist_indexed_logs
+    make mnist_latest
+    make mnist_v1
+
+
 
 To Run All the Sklearn Examples
 ------------------------------
