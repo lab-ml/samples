@@ -101,32 +101,31 @@ def main():
 
             device = torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
-
     # data transform
     data_transform = transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])
-    
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+
     # train loader
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST(str(lab.get_data_path()),
-                   train=True,
-                   download=True,
-                   transform=data_transform)
+                       train=True,
+                       download=True,
+                       transform=data_transform),
         batch_size=train_batch_size, shuffle=True)
-    
+
     # test loader
     test_loader = torch.utils.data.DataLoader(
         datasets.MNIST(str(lab.get_data_path()),
-                   train=False,
-                   download=True,
-                   transform=data_transform)
+                       train=False,
+                       download=True,
+                       transform=data_transform),
         batch_size=test_batch_size, shuffle=False)
 
     # model
-    model = New().to(device)
-    
+    model = Net().to(device)
+
     # optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
