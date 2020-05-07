@@ -25,13 +25,10 @@ mnist_v1:
 
 mnist: mnist_configs mnist_hyperparam_tuning mnist_indexed_logs mnist_v1 mnist_latest
 
+pytorch: cifr10 rnn gan mnist
+
+sklearn:
+	python scikitlearn/scikit-learn.py
 
 
-
-
-
-
-
-
-
-
+all: pytorch  sklearn
