@@ -61,7 +61,7 @@ def model(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(writers={'sqlite'})
+    experiment.create(name='sklearn', writers={'sqlite'})
     experiment.calculate_configs(conf)
 
     experiment.add_sklearn_models(dict(model=conf.model))
