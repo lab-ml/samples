@@ -87,56 +87,56 @@ def main():
     seed: int = 5
     train_log_interval: int = 10
 
-    summary_writer = tf.summary.create_file_writer('logs/mnist')
-
     learning_rate: float = 0.01
 
-    def cuda():
-        is_cuda = use_cuda and torch.cuda.is_available()
-        if not is_cuda:
-            return torch.device("cpu")
+    # get device
+    is_cuda = use_cuda and torch.cuda.is_available()
+    if not is_cuda:
+        device = torch.device("cpu")
+    else:
+        if cuda_device < torch.cuda.device_count():
+            device = torch.device(f"cuda:{cuda_device}")
         else:
-            if cuda_device < torch.cuda.device_count():
-                return torch.device(f"cuda:{cuda_device}")
-            else:
-                print(f"Cuda device index {cuda_device} higher than "  f"device count {torch.cuda.device_count()}")
+            print(f"Cuda device index {cuda_device} higher than "  f"device count {torch.cuda.device_count()}")
 
-                return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
+            device = torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
-    def _data_loader(is_train, batch_size):
-        return torch.utils.data.DataLoader(
-            datasets.MNIST(str(lab.get_data_path()),
-                           train=is_train,
-                           download=True,
-                           transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ])),
-            batch_size=batch_size, shuffle=True)
 
-    def data_loaders():
-        train_data = _data_loader(True, train_batch_size)
-        test_data = _data_loader(False, test_batch_size)
+    # data transform
+    data_transform = transforms.Compose([
+                       transforms.ToTensor(),
+                       transforms.Normalize((0.1307,), (0.3081,))
+                   ])
+    
+    # train loader
+    train_loader = torch.utils.data.DataLoader(
+        datasets.MNIST(str(lab.get_data_path()),
+                   train=True,
+                   download=True,
+                   transform=data_transform)
+        batch_size=train_batch_size, shuffle=True)
+    
+    # test loader
+    test_loader = torch.utils.data.DataLoader(
+        datasets.MNIST(str(lab.get_data_path()),
+                   train=False,
+                   download=True,
+                   transform=data_transform)
+        batch_size=test_batch_size, shuffle=False)
 
-        return train_data, test_data
+    # model
+    model = New().to(device)
+    
+    # optimizer
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    def model():
-        m: Net = Net()
-        m.to(device)
-        return m
+    # set seeds
+    torch.manual_seed(seed)
 
-    def adam_optimizer():
-        return optim.Adam(model.parameters(), lr=learning_rate)
+    # tensorboard writer
+    summary_writer = tf.summary.create_file_writer('logs/mnist')
 
-    def set_seed():
-        torch.manual_seed(seed)
-
-    set_seed()
-    device: any = cuda()
-    train_loader, test_loader = data_loaders()
-    model: nn.Module = model()
-    optimizer: optim.adam = adam_optimizer()
-
+    # training loop
     for epoch in range(1, epochs + 1):
         train(epoch, model, optimizer, train_loader, device, train_log_interval, summary_writer)
         test(epoch, model, test_loader, device, summary_writer)
