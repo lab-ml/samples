@@ -20,21 +20,21 @@ To Run All the Pytorch Examples
 
 
 To Run the GAN Example
------------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make gan
 
 To Run the RNN Example
------------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make rnn
 
 To Run the Cifr10 Example
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -42,7 +42,7 @@ To Run the Cifr10 Example
 
 
 To Run the all Mnist Example
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
