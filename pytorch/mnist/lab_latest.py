@@ -64,17 +64,17 @@ def cross_entropy_loss():
 
 @Configs.calc(Configs.optimizer)
 def sgd_optimizer(c: Configs):
-    return optim.SGD(c.model.parameters(), lr=c.learning_rate, momentum=c.momentum)
+    return optim.SGD(c.model.parameters(), c.learning_rate, c.momentum)
 
 
 @Configs.calc(Configs.optimizer)
 def adam_optimizer(c: Configs):
-    return optim.Adam(c.model.parameters(), lr=c.learning_rate)
+    return optim.Adam(c.model.parameters(), c.learning_rate)
 
 
 def main():
     conf = Configs()
-    experiment.create(name='mnist_latest', writers={'sqlite', 'tensorboard'})
+    experiment.create(name='mnist_latest')
     conf.optimizer = 'adam_optimizer'
     experiment.calculate_configs(conf,
                                  {},

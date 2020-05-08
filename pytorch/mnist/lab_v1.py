@@ -1,14 +1,13 @@
+import lab
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
-from torchvision import datasets, transforms
-
-import lab
 from lab import tracker, monit, loop, experiment, logger
 from lab.helpers.training_loop import TrainingLoopConfigs
 from lab.utils import pytorch as pytorch_utils
+from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -84,7 +83,8 @@ class Configs(TrainingLoopConfigs):
             for data, target in monit.iterate("Test", self.test_loader):
                 data, target = data.to(self.device), target.to(self.device)
                 output = self.model(data)
-                test_loss += F.cross_entropy(output, target, reduction='sum').item()
+                test_loss += F.cross_entropy(output, target,
+                                             reduction='sum').item()
                 pred = output.argmax(dim=1, keepdim=True)
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
@@ -115,7 +115,8 @@ def cuda(c: Configs):
             return torch.device(f"cuda:{c.cuda_device}")
         else:
             logger.log(f"Cuda device index {c.cuda_device} higher than "
-                      f"device count {torch.cuda.device_count()}", logger.Text.warning)
+                       f"device count {torch.cuda.device_count()}",
+                       logger.Text.warning)
             return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
 
@@ -173,9 +174,10 @@ def loop_step(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(name='mnist_v1', writers={'sqlite', 'tensorboard'})
+    conf.optimizer = 'adam_optimizer'
+    experiment.create(name='mnist_v1')
     experiment.calculate_configs(conf,
-                                 {'optimizer': 'adam_optimizer'},
+                                 {},
                                  ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()

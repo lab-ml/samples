@@ -1,10 +1,13 @@
-cifr10:
+.PHONY: help
+.DEFAULT_GOAL := help
+
+cifr10: ## Run cifar10
 	python -m pytorch.cifr10.cifar10
 
-rnn:
+rnn: ## RNN
 	python pytorch/rnn/rnn.py
 
-gan:
+gan: ## GAN
 	python pytorch/gan/simple_gan.py
 
 mnist_configs:
@@ -29,6 +32,9 @@ pytorch: cifr10 rnn gan mnist
 
 sklearn:
 	python scikitlearn/scikit-learn.py
+
+help: ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 
 all: pytorch  sklearn
