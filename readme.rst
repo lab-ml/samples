@@ -62,7 +62,7 @@ To Run All the MNIST Example
 
 
 
-To Run All the Sklearn Examples
+To Run All the SkLearn Examples
 ------------------------------
 
 .. code-block:: bash
