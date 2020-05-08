@@ -74,7 +74,7 @@ class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
             loss.backward()
             self.optimizer.step()
 
-            tracker.add(train_loss=loss)
+            tracker.add({'train.loss': loss})
             loop.add_global_step()
 
             if i % self.train_log_interval == 0:
@@ -93,14 +93,14 @@ class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
                 pred = output.argmax(dim=1, keepdim=True)
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
-        tracker.add(test_loss=test_loss / len(self.test_loader.dataset))
-        tracker.add(accuracy=correct / len(self.test_loader.dataset))
+        tracker.add({'test.loss': test_loss / len(self.test_loader.dataset)})
+        tracker.add({'accuracy': correct / len(self.test_loader.dataset)})
 
     def run(self):
         pytorch_utils.add_model_indicators(self.model)
 
-        tracker.set_queue("train_loss", 20, True)
-        tracker.set_histogram("test_loss", True)
+        tracker.set_queue("train.loss", 20, True)
+        tracker.set_histogram("test.loss", True)
         tracker.set_histogram("accuracy", True)
 
         for _ in self.training_loop:

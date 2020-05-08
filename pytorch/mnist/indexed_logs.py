@@ -65,7 +65,7 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
 
             # Add training loss to the logger.
             # The logger will queue the values and output the mean
-            tracker.add(train_loss=loss)
+            tracker.add({'train.loss': loss})
             loop.add_global_step()
 
             # Print output to the console
@@ -96,15 +96,15 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
                 idx += len(values)
 
         # Add test loss and accuracy to logger
-        tracker.add(test_loss=test_loss / len(self.valid_dataset))
-        tracker.add(accuracy=correct / len(self.valid_dataset))
+        tracker.add({'test.loss': test_loss / len(self.valid_dataset)})
+        tracker.add({'accuracy': correct / len(self.valid_dataset)})
 
     def run(self):
         # Training and testing
         pytorch_utils.add_model_indicators(self.model)
 
-        tracker.set_queue("train_loss", 20, True)
-        tracker.set_histogram("test_loss", True)
+        tracker.set_queue("train.loss", 20, True)
+        tracker.set_histogram("test.loss", True)
         tracker.set_histogram("accuracy", True)
         tracker.set_indexed_scalar('test_sample_loss')
         tracker.set_indexed_scalar('test_sample_pred')

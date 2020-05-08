@@ -63,7 +63,7 @@ class MNISTLoop:
 
             # Add training loss to the logger.
             # The logger will queue the values and output the mean
-            tracker.add(train_loss=loss)
+            tracker.add({'train.loss': loss})
             loop.add_global_step()
 
             # Print output to the console
@@ -84,8 +84,8 @@ class MNISTLoop:
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
         # Add test loss and accuracy to logger
-        tracker.add(test_loss=test_loss / len(self.test_loader.dataset))
-        tracker.add(accuracy=correct / len(self.test_loader.dataset))
+        tracker.add({'test.loss': test_loss / len(self.test_loader.dataset)})
+        tracker.add({'accuracy': correct / len(self.test_loader.dataset)})
 
     def __log_model_params(self):
         if not self.__is_log_parameters:
