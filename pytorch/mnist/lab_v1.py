@@ -4,8 +4,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
+
 from lab import tracker, monit, loop, experiment, logger
 from lab.helpers.training_loop import TrainingLoopConfigs
+from lab.helpers.pytorch.device import DeviceConfigs
 from lab.utils import pytorch as pytorch_utils
 from torchvision import datasets, transforms
 
@@ -28,7 +30,7 @@ class Net(nn.Module):
         return self.fc2(x)
 
 
-class Configs(TrainingLoopConfigs):
+class Configs(TrainingLoopConfigs, DeviceConfigs):
     epochs: int = 10
 
     loop_step = 'loop_step'
@@ -103,21 +105,6 @@ class Configs(TrainingLoopConfigs):
             self.test()
             if self.is_log_parameters:
                 pytorch_utils.store_model_indicators(self.model)
-
-
-@Configs.calc(Configs.device)
-def cuda(c: Configs):
-    is_cuda = c.use_cuda and torch.cuda.is_available()
-    if not is_cuda:
-        return torch.device("cpu")
-    else:
-        if c.cuda_device < torch.cuda.device_count():
-            return torch.device(f"cuda:{c.cuda_device}")
-        else:
-            logger.log(f"Cuda device index {c.cuda_device} higher than "
-                       f"device count {torch.cuda.device_count()}",
-                       logger.Text.warning)
-            return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
 
 def _data_loader(is_train, batch_size):

@@ -6,10 +6,12 @@ import torch.utils.data
 from torchvision import datasets, transforms
 
 import lab
-from lab import monit, tracker, loop, experiment
+from lab import tracker, monit, loop, experiment, logger
 from lab.configs import BaseConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
 from lab.helpers.training_loop import TrainingLoopConfigs
+from lab.helpers.pytorch.device import DeviceConfigs
+from lab.utils import pytorch as pytorch_utils
+from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -32,61 +34,12 @@ class Net(nn.Module):
         return self.fc2(x)
 
 
-class MNIST:
-    def __init__(self, c: 'Configs'):
-        self.model = c.model
-        self.device = c.device
-        self.train_loader = c.train_loader
-        self.test_loader = c.test_loader
-        self.optimizer = c.optimizer
-        self.train_log_interval = c.train_log_interval
-        self.loop = c.training_loop
-        self.__is_log_parameters = c.is_log_parameters
-
-    def _train(self):
-        self.model.train()
-        for i, (data, target) in monit.enum("Train", self.train_loader):
-            data, target = data.to(self.device), target.to(self.device)
-
-            self.optimizer.zero_grad()
-            output = self.model(data)
-            loss = F.cross_entropy(output, target)
-            loss.backward()
-            self.optimizer.step()
-
-            tracker.add(train_loss=loss)
-            loop.add_global_step()
-
-            if i % self.train_log_interval == 0:
-                tracker.save()
-
-    def _test(self):
-        self.model.eval()
-        test_loss = 0
-        correct = 0
-        with torch.no_grad():
-            for data, target in monit.iterate("Test", self.test_loader):
-                data, target = data.to(self.device), target.to(self.device)
-                output = self.model(data)
-                test_loss += F.cross_entropy(output, target, reduction='sum').item()
-                pred = output.argmax(dim=1, keepdim=True)
-                correct += pred.eq(target.view_as(pred)).sum().item()
-
-        tracker.add(test_loss=test_loss / len(self.test_loader.dataset))
-        tracker.add(accuracy=correct / len(self.test_loader.dataset))
-
-    def __call__(self):
-        for _ in self.loop:
-            self._train()
-            self._test()
-
-
 class LoaderConfigs(BaseConfigs):
     train_loader: torch.utils.data.DataLoader
     test_loader: torch.utils.data.DataLoader
 
 
-class Configs(DeviceConfigs, TrainingLoopConfigs, LoaderConfigs):
+class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
     epochs: int = 1
 
     loop_step = 'loop_step'
@@ -112,7 +65,51 @@ class Configs(DeviceConfigs, TrainingLoopConfigs, LoaderConfigs):
 
     set_seed = 'set_seed'
 
-    main: MNIST
+    def train(self):
+        self.model.train()
+        for i, (data, target) in monit.enum("Train", self.train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+
+            self.optimizer.zero_grad()
+            output = self.model(data)
+            loss = F.cross_entropy(output, target)
+            loss.backward()
+            self.optimizer.step()
+
+            tracker.add(train_loss=loss)
+            loop.add_global_step()
+
+            if i % self.train_log_interval == 0:
+                tracker.save()
+
+    def test(self):
+        self.model.eval()
+        test_loss = 0
+        correct = 0
+        with torch.no_grad():
+            for data, target in monit.iterate("Test", self.test_loader):
+                data, target = data.to(self.device), target.to(self.device)
+                output = self.model(data)
+                test_loss += F.cross_entropy(output, target,
+                                             reduction='sum').item()
+                pred = output.argmax(dim=1, keepdim=True)
+                correct += pred.eq(target.view_as(pred)).sum().item()
+
+        tracker.add(test_loss=test_loss / len(self.test_loader.dataset))
+        tracker.add(accuracy=correct / len(self.test_loader.dataset))
+
+    def run(self):
+        pytorch_utils.add_model_indicators(self.model)
+
+        tracker.set_queue("train_loss", 20, True)
+        tracker.set_histogram("test_loss", True)
+        tracker.set_histogram("accuracy", True)
+
+        for _ in self.training_loop:
+            self.train()
+            self.test()
+            if self.is_log_parameters:
+                pytorch_utils.store_model_indicators(self.model)
 
 
 def _data_loader(is_train, batch_size):
@@ -167,18 +164,18 @@ def loop_step(c: Configs):
     return len(c.train_loader)
 
 
-def run(hparams: dict):
+def search(hparams: dict):
     loop.set_global_step(0)
 
     conf = Configs()
-    experiment.create(name='mnist_hyperparam_tuning', writers={'sqlite', 'tensorboard'})
+    experiment.create(name='mnist_hyperparam_tuning')
     experiment.calculate_configs(conf,
                                  hparams,
-                                 ['set_seed', 'main'])
+                                 ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()
 
-    conf.main()
+    conf.run()
 
 
 def main():
@@ -189,7 +186,7 @@ def main():
                 'conv2_kernal': conv2_kernal,
             }
 
-            run(hparams)
+            search(hparams)
 
 
 if __name__ == '__main__':
