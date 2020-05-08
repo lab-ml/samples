@@ -96,16 +96,16 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
                 idx += len(values)
 
         # Add test loss and accuracy to logger
-        tracker.add({'test.loss': test_loss / len(self.valid_dataset)})
-        tracker.add({'accuracy': correct / len(self.valid_dataset)})
+        tracker.add({'valid.loss': test_loss / len(self.valid_dataset)})
+        tracker.add({'valid.accuracy': correct / len(self.valid_dataset)})
 
     def run(self):
         # Training and testing
         pytorch_utils.add_model_indicators(self.model)
 
         tracker.set_queue("train.loss", 20, True)
-        tracker.set_histogram("test.loss", True)
-        tracker.set_histogram("accuracy", True)
+        tracker.set_histogram("valid.loss", True)
+        tracker.set_histogram("valid.accuracy", True)
         tracker.set_indexed_scalar('test_sample_loss')
         tracker.set_indexed_scalar('test_sample_pred')
 
