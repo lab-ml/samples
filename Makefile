@@ -1,7 +1,7 @@
 .PHONY: help
 .DEFAULT_GOAL := help
 
-cifr10: ## Run cifar10
+cifar10: ## Run cifar10
 	python -m pytorch.cifr10.cifar10
 
 rnn: ## RNN
@@ -28,7 +28,7 @@ mnist_v1: ## MNIST v1
 
 mnist: mnist_configs mnist_hyperparam_tuning mnist_indexed_logs mnist_v1 mnist_latest ## All MNIST
 
-pytorch: cifr10 rnn gan mnist ## All PyTorch
+pytorch: cifar10 rnn gan mnist ## All PyTorch
 
 sklearn: ## SKLearn sample
 	python scikitlearn/scikit-learn.py
