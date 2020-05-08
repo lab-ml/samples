@@ -26,9 +26,9 @@ mnist_v1: ## MNIST v1
 	python pytorch/mnist/lab_v1.py
 
 
-mnist: mnist_configs mnist_hyperparam_tuning mnist_indexed_logs mnist_v1 mnist_latest
+mnist: mnist_configs mnist_hyperparam_tuning mnist_indexed_logs mnist_v1 mnist_latest ## All MNIST
 
-pytorch: cifr10 rnn gan mnist
+pytorch: cifr10 rnn gan mnist ## All PyTorch
 
 sklearn: ## SKLearn sample
 	python scikitlearn/scikit-learn.py
