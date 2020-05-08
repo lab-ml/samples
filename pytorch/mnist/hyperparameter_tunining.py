@@ -1,15 +1,13 @@
+import lab
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
-from torchvision import datasets, transforms
-
-import lab
-from lab import tracker, monit, loop, experiment, logger
+from lab import tracker, monit, loop, experiment
 from lab.configs import BaseConfigs
-from lab.helpers.training_loop import TrainingLoopConfigs
 from lab.helpers.pytorch.device import DeviceConfigs
+from lab.helpers.training_loop import TrainingLoopConfigs
 from lab.utils import pytorch as pytorch_utils
 from torchvision import datasets, transforms
 
@@ -40,7 +38,7 @@ class LoaderConfigs(BaseConfigs):
 
 
 class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
-    epochs: int = 1
+    epochs: int = 2  # To test faster
 
     loop_step = 'loop_step'
     loop_count = 'loop_count'
@@ -164,29 +162,28 @@ def loop_step(c: Configs):
     return len(c.train_loader)
 
 
-def search(hparams: dict):
+def search(conf: Configs):
     loop.set_global_step(0)
 
-    conf = Configs()
     experiment.create(name='mnist_hyperparam_tuning')
     experiment.calculate_configs(conf,
-                                 hparams,
+                                 {},
                                  ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()
 
     conf.run()
+    tracker.reset()
 
 
 def main():
     for conv1_kernal in [3, 5]:
         for conv2_kernal in [3, 5]:
-            hparams = {
-                'conv1_kernal': conv1_kernal,
-                'conv2_kernal': conv2_kernal,
-            }
+            conf = Configs()
+            conf.conv1_kernal = conv1_kernal
+            conf.conv2_kernal = conv2_kernal
 
-            search(hparams)
+            search(conf)
 
 
 if __name__ == '__main__':
