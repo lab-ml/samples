@@ -1,13 +1,11 @@
 import lab
-
+import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
-
-import tensorflow as tf
 
 
 class Net(nn.Module):
@@ -28,14 +26,15 @@ class Net(nn.Module):
         return self.fc2(x)
 
 
-def train(epoch, model, optimizer, train_loader, device, train_log_interval, summary_writer):
+def train(epoch, model, optimizer, train_loader, device,
+          train_log_interval, summary_writer):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
 
         optimizer.zero_grad()
         output = model(data)
-        loss = F.nll_loss(output, target)
+        loss = F.cross_entropy(output, target)
         loss.backward()
         optimizer.step()
 
@@ -43,11 +42,10 @@ def train(epoch, model, optimizer, train_loader, device, train_log_interval, sum
             with summary_writer.as_default():
                 tf.summary.scalar('train_loss', loss.item(), step=epoch)
 
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx * len(data),
-                                                                           len(train_loader.dataset),
-                                                                           100. * batch_idx / len(
-                                                                               train_loader),
-                                                                           loss.item()))
+            print(f'Train Epoch: {epoch}'
+                  f' [{batch_idx * len(data)}/{len(train_loader.dataset)}'
+                  f' ({100. * batch_idx / len(train_loader):.0f}%)]'
+                  f'\tLoss: {loss.item():.6f}')
 
 
 def test(epoch, model, test_loader, device, summary_writer):
@@ -59,8 +57,9 @@ def test(epoch, model, test_loader, device, summary_writer):
             data, target = data.to(device), target.to(device)
 
             output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            test_loss += F.cross_entropy(output, target,
+                                         reduction='sum').item()
+            pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
@@ -70,24 +69,24 @@ def test(epoch, model, test_loader, device, summary_writer):
         tf.summary.scalar('test_loss', test_loss, step=epoch)
         tf.summary.scalar('test_accuracy', test_accuracy, step=epoch)
 
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct,
-                                                                                 len(test_loader.dataset),
-                                                                                 test_accuracy))
+    print(f'\nTest set: Average loss: {test_loss:.4f},'
+          f' Accuracy: {correct}/{len(test_loader.dataset)}'
+          f' ({test_accuracy:.0f}%)\n')
 
 
 def main():
-    epochs: int = 10
+    epochs = 10
 
     is_save_models = True
-    train_batch_size: int = 64
-    test_batch_size: int = 1000
+    train_batch_size = 64
+    test_batch_size = 1000
 
-    use_cuda: bool = True
-    cuda_device: int = 0
-    seed: int = 5
-    train_log_interval: int = 10
+    use_cuda = True
+    cuda_device = 0
+    seed = 5
+    train_log_interval = 10
 
-    learning_rate: float = 0.01
+    learning_rate = 0.01
 
     # get device
     is_cuda = use_cuda and torch.cuda.is_available()
@@ -97,7 +96,8 @@ def main():
         if cuda_device < torch.cuda.device_count():
             device = torch.device(f"cuda:{cuda_device}")
         else:
-            print(f"Cuda device index {cuda_device} higher than "  f"device count {torch.cuda.device_count()}")
+            print(f"Cuda device index {cuda_device} higher than "
+                  f"device count {torch.cuda.device_count()}")
 
             device = torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
@@ -137,7 +137,8 @@ def main():
 
     # training loop
     for epoch in range(1, epochs + 1):
-        train(epoch, model, optimizer, train_loader, device, train_log_interval, summary_writer)
+        train(epoch, model, optimizer, train_loader, device,
+              train_log_interval, summary_writer)
         test(epoch, model, test_loader, device, summary_writer)
 
     if is_save_models:
