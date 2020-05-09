@@ -47,9 +47,9 @@ class MNISTLoop:
     def startup(self):
         pytorch_utils.add_model_indicators(self.model)
 
-        tracker.set_queue("train_loss", 20, True)
-        tracker.set_histogram("test_loss", True)
-        tracker.set_histogram("accuracy", True)
+        tracker.set_queue("train.loss", 20, True)
+        tracker.set_histogram("valid.loss", True)
+        tracker.set_histogram("valid.accuracy", True)
 
     def _train(self):
         self.model.train()

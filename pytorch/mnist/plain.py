@@ -40,7 +40,7 @@ def train(epoch, model, optimizer, train_loader, device,
 
         if batch_idx % train_log_interval == 0:
             with summary_writer.as_default():
-                tf.summary.scalar('train_loss', loss.item(), step=epoch)
+                tf.summary.scalar('train.loss', loss.item(), step=epoch)
 
             print(f'Train Epoch: {epoch}'
                   f' [{batch_idx * len(data)}/{len(train_loader.dataset)}'
@@ -66,8 +66,8 @@ def test(epoch, model, test_loader, device, summary_writer):
     test_accuracy = 100. * correct / len(test_loader.dataset)
 
     with summary_writer.as_default():
-        tf.summary.scalar('test_loss', test_loss, step=epoch)
-        tf.summary.scalar('test_accuracy', test_accuracy, step=epoch)
+        tf.summary.scalar('valid.loss', test_loss, step=epoch)
+        tf.summary.scalar('valid.accuracy', test_accuracy, step=epoch)
 
     print(f'\nTest set: Average loss: {test_loss:.4f},'
           f' Accuracy: {correct}/{len(test_loader.dataset)}'
