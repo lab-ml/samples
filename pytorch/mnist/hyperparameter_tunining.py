@@ -101,7 +101,7 @@ class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
 
         tracker.set_queue("train.loss", 20, True)
         tracker.set_histogram("valid.loss", True)
-        tracker.set_histogram("valid.accuracy", True)
+        tracker.set_scalar("valid.accuracy", True)
 
         for _ in self.training_loop:
             self.train()

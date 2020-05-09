@@ -85,12 +85,12 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
                 loss = F.nll_loss(output, target, reduction='none')
                 values = list(loss.cpu().numpy())
                 indexes = [idx + i for i in range(len(values))]
-                tracker.add('test_sample_loss', (indexes, values))
+                tracker.add('valid.sample_loss', (indexes, values))
 
                 test_loss += float(np.sum(loss.cpu().numpy()))
                 pred = output.argmax(dim=1, keepdim=True)
                 values = list(pred.cpu().numpy())
-                tracker.add('test_sample_pred', (indexes, values))
+                tracker.add('valid.sample_pred', (indexes, values))
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
                 idx += len(values)
@@ -105,12 +105,12 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
 
         tracker.set_queue("train.loss", 20, True)
         tracker.set_histogram("valid.loss", True)
-        tracker.set_histogram("valid.accuracy", True)
-        tracker.set_indexed_scalar('test_sample_loss')
-        tracker.set_indexed_scalar('test_sample_pred')
+        tracker.set_scalar("valid.accuracy", True)
+        tracker.set_indexed_scalar('valid.sample_loss')
+        tracker.set_indexed_scalar('valid.sample_pred')
 
         test_data = np.array([d[0].numpy() for d in self.valid_dataset])
-        experiment.save_numpy("test_data", test_data)
+        experiment.save_numpy("valid.data", test_data)
 
         for _ in self.training_loop:
             self.train()
