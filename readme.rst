@@ -7,8 +7,16 @@ a collection of lab-examples
 Quick Start
 -----------
 
-Install Requirements
+1) Clone Samples Repo.
 ~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+     git clone https://github.com/lab-ml/samples.git
+
+
+2) Install Requirements
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
