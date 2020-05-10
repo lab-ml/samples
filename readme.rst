@@ -3,6 +3,13 @@ Samples
 
 a collection of lab-examples
 
+Install Requirements
+----------------------
+
+.. code-block:: bash
+
+     pip install -r requirements.txt
+
 
 To Run All the Examples
 ----------------------
