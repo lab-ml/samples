@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+
+[packages]
+matplotlib = "*"
+numpy = "*"
+machine_learning_lab = "*"
+tensorflow = "*"
+torchvision = "*"
+machine-learning-lab-dashboard = "*"
+
+[requires]
+python_version = "3.7"
