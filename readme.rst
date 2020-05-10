@@ -11,14 +11,14 @@ Install Requirements
      pip install -r requirements.txt
 
 
-To Run All the Examples
+To run all the examples
 ----------------------
 
 .. code-block:: bash
 
     make all
 
-To Run All the Pytorch Examples
+To run all the Pytorch examples
 ------------------------------
 
 .. code-block:: bash
@@ -26,21 +26,21 @@ To Run All the Pytorch Examples
     make pytorch
 
 
-To Run the GAN Example
+To run the GAN example
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make gan
 
-To Run the RNN Example
+To run the RNN example
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make rnn
 
-To Run the CIFR10 Example
+To run the CIFR10 example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
@@ -48,7 +48,7 @@ To Run the CIFR10 Example
     make cifr10
 
 
-To Run All the MNIST Example
+To run All the MNIST example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
@@ -69,7 +69,7 @@ To Run All the MNIST Example
 
 
 
-To Run All the SkLearn Examples
+To run all the SkLearn examples
 ------------------------------
 
 .. code-block:: bash
