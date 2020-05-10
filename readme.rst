@@ -26,7 +26,7 @@ Quick Start
 
    **Node is Required**
 
-   *Node installation is required for Lab Dashboard. If node is not installed, you can downland and install* `here <https://nodejs.org/en/download/>`_.
+   *Node installation is required for **Lab Dashboard**. If node is not installed, you can downland and install* `here <https://nodejs.org/en/download/>`_.
 
 
 3) Run an Example
@@ -35,6 +35,16 @@ Quick Start
 .. code-block:: bash
 
      make mnist_hyperparam_tuning
+
+
+$) View in Lab DashBoard
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Start the server using the following command. It will open the Lab Dashboard in your default browser.
+
+.. code-block:: bash
+
+     lab dashboard
 
 
 Run Examples
