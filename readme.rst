@@ -15,7 +15,7 @@ Quick Start
      git clone https://github.com/lab-ml/samples.git
 
 
-2) Install Requirements
+2) Install the Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
