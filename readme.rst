@@ -7,8 +7,8 @@ a collection of lab-examples
 Quick Start
 -----------
 
-1) Clone Samples Repo.
-~~~~~~~~~~~~~~~~~~~~
+1) Clone the Samples Repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -21,6 +21,20 @@ Quick Start
 .. code-block:: bash
 
      pip install -r requirements.txt
+
+.. note::
+
+   **Node is Required**
+
+   *Node installation is required for Lab Dashboard. If node is not installed, you can downland and install `here <https://nodejs.org/en/download/>`_.
+
+
+3) Run an Example
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+     make mnist_hyperparam_tuning
 
 
 Run Examples
