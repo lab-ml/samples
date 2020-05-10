@@ -26,7 +26,7 @@ Quick Start
 
    **Node is Required**
 
-   Node installation is required for Lab Dashboard. If node is not installed, you can downland and install `here <https://nodejs.org/en/download/>`_.
+   *Node installation is required for Lab Dashboard. If node is not installed, you can downland and install* `here <https://nodejs.org/en/download/>`_.
 
 
 3) Run an Example
