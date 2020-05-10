@@ -16,14 +16,14 @@ Run Examples
 
 
 1) To run all the examples
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make all
 
 2) To run all the Pytorch examples
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -31,21 +31,21 @@ Run Examples
 
 
 2.1) To run the GAN example
-""""""""""""""""""""""
+"""""""""""""""""""""""""""
 
 .. code-block:: bash
 
     make gan
 
 2.2) To run the RNN example
-"""""""""""""""""""""""
+"""""""""""""""""""""""""""
 
 .. code-block:: bash
 
     make rnn
 
 2.3) To run the CIFR10 example
-"""""""""""""""""""""""""
+""""""""""""""""""""""""""""""
 
 .. code-block:: bash
 
@@ -53,7 +53,7 @@ Run Examples
 
 
 2.4) To run All the MNIST example
-""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""
 
 .. code-block:: bash
 
@@ -74,7 +74,7 @@ Run Examples
 
 
 3) To run all the SkLearn examples
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
