@@ -12,14 +12,14 @@ Install Requirements
 
 
 To run all the examples
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make all
 
 To run all the Pytorch examples
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -27,21 +27,21 @@ To run all the Pytorch examples
 
 
 To run the GAN example
-~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""""
 
 .. code-block:: bash
 
     make gan
 
 To run the RNN example
-~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""
 
 .. code-block:: bash
 
     make rnn
 
 To run the CIFR10 example
-~~~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""""
 
 .. code-block:: bash
 
@@ -49,7 +49,7 @@ To run the CIFR10 example
 
 
 To run All the MNIST example
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""""""""""
 
 .. code-block:: bash
 
@@ -70,7 +70,7 @@ To run All the MNIST example
 
 
 To run all the SkLearn examples
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
