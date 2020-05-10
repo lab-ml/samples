@@ -4,21 +4,25 @@ Samples
 a collection of lab-examples
 
 Install Requirements
-----------------------
+--------------------
 
 .. code-block:: bash
 
      pip install -r requirements.txt
 
 
-To run all the examples
+Run Examples
+------------
+
+
+1) To run all the examples
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
     make all
 
-To run all the Pytorch examples
+2) To run all the Pytorch examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
@@ -26,21 +30,21 @@ To run all the Pytorch examples
     make pytorch
 
 
-To run the GAN example
+2.1) To run the GAN example
 """"""""""""""""""""""
 
 .. code-block:: bash
 
     make gan
 
-To run the RNN example
+2.2) To run the RNN example
 """""""""""""""""""""""
 
 .. code-block:: bash
 
     make rnn
 
-To run the CIFR10 example
+2.3) To run the CIFR10 example
 """""""""""""""""""""""""
 
 .. code-block:: bash
@@ -48,7 +52,7 @@ To run the CIFR10 example
     make cifr10
 
 
-To run All the MNIST example
+2.4) To run All the MNIST example
 """"""""""""""""""""""""""""
 
 .. code-block:: bash
@@ -69,7 +73,7 @@ To run All the MNIST example
 
 
 
-To run all the SkLearn examples
+3) To run all the SkLearn examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
