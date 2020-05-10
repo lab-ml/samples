@@ -37,7 +37,7 @@ Quick Start
      make mnist_hyperparam_tuning
 
 
-$) View in Lab DashBoard
+4) View on Lab DashBoard
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Start the server using the following command. It will open the Lab Dashboard in your default browser.
