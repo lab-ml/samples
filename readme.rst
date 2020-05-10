@@ -1,7 +1,7 @@
 Samples
 =======
 
-a collection of lab-examples
+A collection of lab-examples
 
 
 Quick Start
