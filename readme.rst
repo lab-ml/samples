@@ -85,7 +85,7 @@ Run Examples
     make cifr10
 
 
-2.4) To run All the MNIST example
+2.4) To run all the MNIST example
 """""""""""""""""""""""""""""""""
 
 .. code-block:: bash
