@@ -1,4 +1,4 @@
-import lab
+import labml
 import tensorflow as tf
 import torch
 import torch.nn as nn
@@ -109,7 +109,7 @@ def main():
 
     # train loader
     train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST(str(lab.get_data_path()),
+        datasets.MNIST(str(labml.get_data_path()),
                        train=True,
                        download=True,
                        transform=data_transform),
@@ -117,7 +117,7 @@ def main():
 
     # test loader
     test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST(str(lab.get_data_path()),
+        datasets.MNIST(str(labml.get_data_path()),
                        train=False,
                        download=True,
                        transform=data_transform),

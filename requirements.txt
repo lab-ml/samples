@@ -5,3 +5,4 @@ tensorflow==2.0.0
 torchvision==0.5.0
 torch==1.4.0
 labml-dashboard==0.4.7
+sklearn

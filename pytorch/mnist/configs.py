@@ -5,11 +5,11 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-import lab
-from lab import monit, tracker, loop, experiment, logger
-from lab.configs import BaseConfigs
-from lab.logger import Text
-from lab.utils import pytorch as pytorch_utils
+import labml
+from labml import monit, tracker, loop, experiment, logger
+from labml.configs import BaseConfigs
+from labml.logger import Text
+from labml.utils import pytorch as pytorch_utils
 
 
 class Net(nn.Module):

@@ -5,8 +5,8 @@ This is an example of how you can inherit configs.
 import torch.nn as nn
 import torch.nn.functional as F
 
-from lab import experiment
-from lab.helpers.pytorch.datasets.cifar10 import CIFAR10Configs
+from labml import experiment
+from labml.helpers.pytorch.datasets.cifar10 import CIFAR10Configs
 from pytorch.mnist.lab_latest import Configs as MNISTExperimentConfigs
 
 

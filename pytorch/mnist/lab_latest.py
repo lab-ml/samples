@@ -3,11 +3,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from lab import experiment
-from lab.helpers.pytorch.datasets.mnist import MNISTConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
-from lab.helpers.pytorch.seed import SeedConfigs
-from lab.helpers.pytorch.train_valid import TrainValidConfigs
+from labml import experiment
+from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
+from labml.helpers.pytorch.device import DeviceConfigs
+from labml.helpers.pytorch.seed import SeedConfigs
+from labml.helpers.pytorch.train_valid import TrainValidConfigs
 
 
 class Net(nn.Module):

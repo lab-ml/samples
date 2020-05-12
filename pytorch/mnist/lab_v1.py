@@ -5,10 +5,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from lab import tracker, monit, loop, experiment, logger
-from lab.helpers.training_loop import TrainingLoopConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
-from lab.utils import pytorch as pytorch_utils
+from labml import tracker, monit, loop, experiment, logger
+from labml.helpers.training_loop import TrainingLoopConfigs
+from labml.helpers.pytorch.device import DeviceConfigs
+from labml.utils import pytorch as pytorch_utils
 from torchvision import datasets, transforms
 
 

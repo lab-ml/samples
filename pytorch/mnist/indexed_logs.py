@@ -5,11 +5,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from lab import tracker, monit, loop, experiment
-from lab.helpers.pytorch.datasets.mnist import MNISTConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
-from lab.helpers.training_loop import TrainingLoopConfigs
-from lab.utils import pytorch as pytorch_utils
+from labml import tracker, monit, loop, experiment
+from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
+from labml.helpers.pytorch.device import DeviceConfigs
+from labml.helpers.training_loop import TrainingLoopConfigs
+from labml.utils import pytorch as pytorch_utils
 
 
 class Net(nn.Module):

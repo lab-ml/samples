@@ -8,13 +8,13 @@ import torch.optim as optim
 import torch.utils.data
 from sklearn.metrics import f1_score
 
-import lab
-from lab import tracker, loop, monit, experiment
-from lab.configs import BaseConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
-from lab.helpers.training_loop import TrainingLoopConfigs
-from lab.utils import pytorch as pytorch_utils
-from lab.utils.data.pytorch import CsvDataset
+import labml
+from labml import tracker, loop, monit, experiment
+from labml.configs import BaseConfigs
+from labml.helpers.pytorch.device import DeviceConfigs
+from labml.helpers.training_loop import TrainingLoopConfigs
+from labml.utils import pytorch as pytorch_utils
+from labml.utils.data.pytorch import CsvDataset
 
 
 class EncoderRNN(nn.Module):
@@ -186,7 +186,7 @@ def loop_step(c: Configs):
 
 
 def _custom_dataset(is_train):
-    return CsvDataset(file_path=f'{lab.get_data_path()}/liverpool-ion-switching/train.csv',
+    return CsvDataset(file_path=f'{labml.get_data_path()}/liverpool-ion-switching/train.csv',
                       train=is_train,
                       test_fraction=0.1,
                       x_cols=['signal'],

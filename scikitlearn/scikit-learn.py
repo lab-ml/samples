@@ -4,8 +4,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import f1_score, precision_score, recall_score
 
-from lab import tracker, experiment
-from lab.configs import BaseConfigs
+from labml import tracker, experiment
+from labml.configs import BaseConfigs
 
 
 class Configs(BaseConfigs):

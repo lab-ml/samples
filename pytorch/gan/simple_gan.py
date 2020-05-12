@@ -5,11 +5,11 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-import lab
-from lab import tracker, loop, monit, experiment
-from lab.configs import BaseConfigs
-from lab.helpers.pytorch.device import DeviceConfigs
-from lab.helpers.training_loop import TrainingLoopConfigs
+import labml
+from labml import tracker, loop, monit, experiment
+from labml.configs import BaseConfigs
+from labml.helpers.pytorch.device import DeviceConfigs
+from labml.helpers.training_loop import TrainingLoopConfigs
 
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
@@ -249,7 +249,7 @@ def loop_step(c: Configs):
 
 def _data_loader(is_train, batch_size):
     return torch.utils.data.DataLoader(
-        datasets.MNIST(str(lab.get_data_path()),
+        datasets.MNIST(str(labml.get_data_path()),
                        train=is_train,
                        download=True,
                        transform=transforms.Compose([
