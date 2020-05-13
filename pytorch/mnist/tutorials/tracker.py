@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-from labml import lab, tracker, experiment
+from labml import lab, tracker, experiment, logger
 
 
 class Net(nn.Module):
@@ -137,6 +137,10 @@ def main():
     for epoch in range(1, epochs + 1):
         train(model, optimizer, train_loader, device, train_log_interval)
         test(model, test_loader, device)
+        logger.log()
+
+    # save the model
+    experiment.save_checkpoint()
 
 
 if __name__ == '__main__':
