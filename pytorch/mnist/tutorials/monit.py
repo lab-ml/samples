@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-from labml import lab, tracker, experiment
+from labml import lab, tracker, experiment, monit
 
 
 class Net(nn.Module):
@@ -29,7 +29,7 @@ class Net(nn.Module):
 def train(model, optimizer, train_loader, device, train_log_interval):
 
     model.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
+    for batch_idx, (data, target) in monit.enum("Train", train_loader):
         data, target = data.to(device), target.to(device)
 
         optimizer.zero_grad()
@@ -50,14 +50,14 @@ def test(model, test_loader, device):
     test_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_loader:
+        for data, target in monit.iterate("test", test_loader):
             data, target = data.to(device), target.to(device)
 
             output = model(data)
             test_loss += F.cross_entropy(output, target,
                                          reduction='sum').item()
             pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()\
+            correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
     test_accuracy = 100. * correct / len(test_loader.dataset)
@@ -134,7 +134,7 @@ def main():
     experiment.start()
 
     # training loop
-    for epoch in range(1, epochs + 1):
+    for _ in monit.loop(range(1, epochs + 1)):
         train(model, optimizer, train_loader, device, train_log_interval)
         test(model, test_loader, device)
 

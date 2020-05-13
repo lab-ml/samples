@@ -61,7 +61,7 @@ class Configs(TrainingLoopConfigs, DeviceConfigs):
 
     def train(self):
         self.model.train()
-        for i, (data, target) in monit.enum("Train", self.train_loader):
+        for i, (data, target) in monit.enum("train", self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
 
             self.optimizer.zero_grad()
@@ -81,7 +81,7 @@ class Configs(TrainingLoopConfigs, DeviceConfigs):
         test_loss = 0
         correct = 0
         with torch.no_grad():
-            for data, target in monit.iterate("Test", self.test_loader):
+            for data, target in monit.iterate("test", self.test_loader):
                 data, target = data.to(self.device), target.to(self.device)
                 output = self.model(data)
                 test_loss += F.cross_entropy(output, target,

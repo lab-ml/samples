@@ -65,7 +65,7 @@ class RNN:
         self.__is_log_parameters = c.is_log_parameters
 
     def _train(self):
-        for i, (input_tensor, target_tensor) in monit.enum("Train", self.train_loader):
+        for i, (input_tensor, target_tensor) in monit.enum("train", self.train_loader):
             encoder_hidden = self.encoder.init_hidden(self.device).double().to(self.device)
 
             input_tensor = input_tensor.to(self.device).unsqueeze(1)
@@ -89,7 +89,7 @@ class RNN:
         with torch.no_grad():
             macro_f1s = []
             test_losses = []
-            for input_tensor, target_tensor in monit.iterate("Test", self.test_loader):
+            for input_tensor, target_tensor in monit.iterate("test", self.test_loader):
                 encoder_hidden = self.encoder.init_hidden(self.device).double().to(self.device)
 
                 input_tensor = input_tensor.to(self.device).unsqueeze(1)

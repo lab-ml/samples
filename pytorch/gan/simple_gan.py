@@ -138,7 +138,7 @@ class GAN:
         self.__is_log_parameters = c.is_log_parameters
 
     def _train(self):
-        for i, (images, _) in monit.enum("Train", self.train_loader):
+        for i, (images, _) in monit.enum("train", self.train_loader):
             targets_real = torch.empty(images.size(0), 1, device=self.device).uniform_(0.8, 1.0)
             targets_fake = torch.empty(images.size(0), 1, device=self.device).uniform_(0.0, 0.2)
 
