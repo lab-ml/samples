@@ -27,7 +27,6 @@ class Net(nn.Module):
 
 
 def train(model, optimizer, train_loader, device, train_log_interval):
-
     model.train()
     for batch_idx, (data, target) in monit.enum("Train", train_loader):
         data, target = data.to(device), target.to(device)
