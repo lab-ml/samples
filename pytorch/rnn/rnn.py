@@ -8,8 +8,7 @@ import torch.optim as optim
 import torch.utils.data
 from sklearn.metrics import f1_score
 
-import labml
-from labml import tracker, loop, monit, experiment
+from labml import tracker, loop, monit, experiment, lab
 from labml.configs import BaseConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
@@ -81,7 +80,7 @@ class RNN:
             self.optimizer.step()
 
             tracker.add(loss=train_loss.item())
-            loop.add_global_step()
+            tracker.add_global_step()
             tracker.save()
 
     def _test(self):
@@ -186,7 +185,7 @@ def loop_step(c: Configs):
 
 
 def _custom_dataset(is_train):
-    return CsvDataset(file_path=f'{labml.get_data_path()}/liverpool-ion-switching/train.csv',
+    return CsvDataset(file_path=f'{lab.get_data_path()}/liverpool-ion-switching/train.csv',
                       train=is_train,
                       test_fraction=0.1,
                       x_cols=['signal'],

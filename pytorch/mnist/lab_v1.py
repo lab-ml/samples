@@ -1,11 +1,10 @@
-import lab
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import tracker, monit, loop, experiment, logger, lab
+from labml import tracker, monit, experiment, lab
 from labml.helpers.training_loop import TrainingLoopConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.utils import pytorch as pytorch_utils
@@ -72,7 +71,7 @@ class Configs(TrainingLoopConfigs, DeviceConfigs):
             self.optimizer.step()
 
             tracker.add({'train.loss': loss})
-            loop.add_global_step()
+            tracker.add_global_step()
 
             if i % self.train_log_interval == 0:
                 tracker.save()

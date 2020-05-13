@@ -5,8 +5,7 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-import labml
-from labml import tracker, loop, monit, experiment
+from labml import tracker, monit, experiment, lab
 from labml.configs import BaseConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
@@ -163,7 +162,7 @@ class GAN:
 
             tracker.add(G_Loss=generator_loss.item())
             tracker.add(D_Loss=discriminator_loss.item())
-            loop.add_global_step()
+            tracker.add_global_step()
 
         for j in range(1, 10):
             img = fake_images[j].squeeze()
@@ -249,7 +248,7 @@ def loop_step(c: Configs):
 
 def _data_loader(is_train, batch_size):
     return torch.utils.data.DataLoader(
-        datasets.MNIST(str(labml.get_data_path()),
+        datasets.MNIST(str(lab.get_data_path()),
                        train=is_train,
                        download=True,
                        transform=transforms.Compose([

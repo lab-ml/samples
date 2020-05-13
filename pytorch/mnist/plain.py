@@ -1,4 +1,3 @@
-import labml
 import tensorflow as tf
 import torch
 import torch.nn as nn
@@ -6,6 +5,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
+
+from labml import lab
 
 
 class Net(nn.Module):
@@ -42,7 +43,7 @@ def train(epoch, model, optimizer, train_loader, device,
             with summary_writer.as_default():
                 tf.summary.scalar('train.loss', loss.item(), step=epoch)
 
-            print(f'Train Epoch: {epoch}'
+            print(f'train epoch: {epoch}'
                   f' [{batch_idx * len(data)}/{len(train_loader.dataset)}'
                   f' ({100. * batch_idx / len(train_loader):.0f}%)]'
                   f'\tLoss: {loss.item():.6f}')
@@ -109,7 +110,7 @@ def main():
 
     # train loader
     train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST(str(labml.get_data_path()),
+        datasets.MNIST(str(lab.get_data_path()),
                        train=True,
                        download=True,
                        transform=data_transform),
@@ -117,7 +118,7 @@ def main():
 
     # test loader
     test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST(str(labml.get_data_path()),
+        datasets.MNIST(str(lab.get_data_path()),
                        train=False,
                        download=True,
                        transform=data_transform),
