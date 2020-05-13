@@ -3,9 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
-from torchvision import datasets, transforms
-
 from labml import lab, tracker, experiment, monit, logger
+from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -63,6 +62,7 @@ def test(model, test_loader, device):
 
     tracker.add({'valid.loss': test_loss})
     tracker.add({'valid.accuracy': test_accuracy})
+    tracker.save()
 
 
 def main():

@@ -3,9 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
-from torchvision import datasets, transforms
-
 from labml import lab, tracker, experiment, logger
+from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -27,7 +26,6 @@ class Net(nn.Module):
 
 
 def train(model, optimizer, train_loader, device, train_log_interval):
-
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -57,7 +55,7 @@ def test(model, test_loader, device):
             test_loss += F.cross_entropy(output, target,
                                          reduction='sum').item()
             pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()\
+            correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
     test_accuracy = 100. * correct / len(test_loader.dataset)
