@@ -8,7 +8,7 @@ import torch.optim as optim
 import torch.utils.data
 from sklearn.metrics import f1_score
 
-from labml import tracker, loop, monit, experiment, lab
+from labml import tracker, monit, experiment, lab
 from labml.configs import BaseConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs

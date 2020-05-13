@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import tracker, monit, loop, experiment
+from labml import tracker, monit, experiment
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
@@ -66,7 +66,7 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
             # Add training loss to the logger.
             # The logger will queue the values and output the mean
             tracker.add({'train.loss': loss})
-            loop.add_global_step()
+            tracker.add_global_step()
 
             # Print output to the console
             if i % self.train_log_interval == 0:

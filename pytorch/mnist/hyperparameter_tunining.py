@@ -1,10 +1,10 @@
-import labml
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
-from labml import tracker, monit, loop, experiment
+
+from labml import tracker, monit, loop, experiment, lab
 from labml.configs import BaseConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
@@ -75,7 +75,7 @@ class Configs(LoaderConfigs, TrainingLoopConfigs, DeviceConfigs):
             self.optimizer.step()
 
             tracker.add({'train.loss': loss})
-            loop.add_global_step()
+            tracker.add_global_step()
 
             if i % self.train_log_interval == 0:
                 tracker.save()
@@ -163,7 +163,7 @@ def loop_step(c: Configs):
 
 
 def search(conf: Configs):
-    loop.set_global_step(0)
+    tracker.set_global_step(0)
 
     experiment.create(name='mnist_hyperparam_tuning')
     experiment.calculate_configs(conf,
