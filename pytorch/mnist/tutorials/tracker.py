@@ -62,6 +62,7 @@ def test(model, test_loader, device):
 
     tracker.add({'valid.loss': test_loss})
     tracker.add({'valid.accuracy': test_accuracy})
+    tracker.save()
 
 
 def main():
