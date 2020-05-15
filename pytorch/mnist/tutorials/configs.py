@@ -28,20 +28,42 @@ class Net(nn.Module):
         return self.fc2(x)
 
 
-class Configs(BaseConfigs):
-    epochs: int = 10
-
+class LoaderConfigs(BaseConfigs):
     train_batch_size: int = 64
     test_batch_size: int = 1000
+
+    train_loader: torch.utils.data.DataLoader
+    test_loader: torch.utils.data.DataLoader
+
+
+def _data_loader(is_train, batch_size):
+    return torch.utils.data.DataLoader(
+        datasets.MNIST(str(lab.get_data_path()),
+                       train=is_train,
+                       download=True,
+                       transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=batch_size, shuffle=True)
+
+
+@LoaderConfigs.calc([LoaderConfigs.train_loader, LoaderConfigs.test_loader])
+def data_loaders(c: LoaderConfigs):
+    train_data = _data_loader(True, c.train_batch_size)
+    test_data = _data_loader(False, c.test_batch_size)
+
+    return train_data, test_data
+
+
+class Configs(LoaderConfigs):
+    epochs: int = 10
 
     use_cuda: bool = True
     cuda_device: int = 0
     seed: int = 5
 
     device: any
-
-    train_loader: torch.utils.data.DataLoader
-    test_loader: torch.utils.data.DataLoader
 
     model: nn.Module
 
@@ -107,26 +129,6 @@ def get_device(c: Configs):
                   f"device count {torch.cuda.device_count()}")
 
             return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
-
-
-def _data_loader(is_train, batch_size):
-    return torch.utils.data.DataLoader(
-        datasets.MNIST(str(lab.get_data_path()),
-                       train=is_train,
-                       download=True,
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
-        batch_size=batch_size, shuffle=True)
-
-
-@Configs.calc([Configs.train_loader, Configs.test_loader])
-def data_loaders(c: Configs):
-    train_data = _data_loader(True, c.train_batch_size)
-    test_data = _data_loader(False, c.test_batch_size)
-
-    return train_data, test_data
 
 
 @Configs.calc(Configs.model)
