@@ -69,9 +69,9 @@ class Configs(LoaderConfigs):
 
     learning_rate: float = 0.01
     momentum: float = 0.5
-    optimizer: optim.SGD
+    optimizer: optim = 'adam_optimizer'
 
-    set_seed = 'set_seed'
+    set_seed: int
 
     def train(self, epoch):
         self.model.train()
@@ -155,7 +155,6 @@ def set_seed(c: Configs):
 
 def main():
     conf = Configs()
-    conf.optimizer = 'adam_optimizer'
     experiment.create(name='configs')
     experiment.calculate_configs(conf,
                                  {},
