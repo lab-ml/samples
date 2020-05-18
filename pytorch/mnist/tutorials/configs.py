@@ -157,7 +157,7 @@ def main():
     conf = Configs()
     experiment.create(name='configs')
     experiment.calculate_configs(conf,
-                                 {},
+                                 {'optimizer': 'adam_optimizer'},
                                  ['set_seed', 'run'])
     experiment.start()
     conf.run()
