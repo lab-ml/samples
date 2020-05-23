@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/github/labs/labml')
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
