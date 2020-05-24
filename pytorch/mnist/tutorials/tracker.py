@@ -36,7 +36,9 @@ def train(model, optimizer, train_loader, device, train_log_interval):
         loss.backward()
         optimizer.step()
 
-        tracker.add({'train.loss': loss})
+        tracker.add({'train_loss': loss})  # overloading methods  # tracker.add(train_loss = loss)
+                                                                  # tracker.add('train_loss', loss)
+
         tracker.add_global_step()
 
         if batch_idx % train_log_interval == 0:
@@ -60,12 +62,17 @@ def test(model, test_loader, device):
     test_loss /= len(test_loader.dataset)
     test_accuracy = 100. * correct / len(test_loader.dataset)
 
-    tracker.add({'valid.loss': test_loss})
-    tracker.add({'valid.accuracy': test_accuracy})
+    tracker.add({'valid_loss': test_loss})
+    tracker.add({'valid_accuracy': test_accuracy})
     tracker.save()
 
 
 def main():
+    # set indicator types
+    tracker.set_queue("train_loss", 20, True)
+    tracker.set_histogram("valid_loss", True)
+    tracker.set_scalar("valid_accuracy", True)
+
     epochs = 10
 
     train_batch_size = 64
@@ -122,14 +129,32 @@ def main():
     # set seeds
     torch.manual_seed(seed)
 
-    # set metrics types
-    tracker.set_queue("train.loss", 20, True)
-    tracker.set_histogram("valid.loss", True)
-    tracker.set_scalar("valid.accuracy", True)
+    # only for logging purposes
+    configs = {
+        'epochs': epochs,
+        'train_batch_size': train_batch_size,
+        'test_batch_size': test_batch_size,
+        'use_cuda': use_cuda,
+        'cuda_device': cuda_device,
+        'seed': seed,
+        'train_log_interval': train_log_interval,
+        'learning_rate': learning_rate,
+        'device': device,
+        'train_loader': train_loader,
+        'test_loader': test_loader,
+        'model': model,
+        'optimizer': optimizer,
+    }
 
     # create the experiment
     experiment.create(name='tracker')
+
+    # experiment configs
+    experiment.calculate_configs(configs)
+
+    # pyTorch model
     experiment.add_pytorch_models(dict(model=model))
+
     experiment.start()
 
     # training loop

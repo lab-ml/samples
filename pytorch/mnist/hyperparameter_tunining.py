@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import tracker, monit, loop, experiment, lab
+from labml import tracker, monit,  experiment, lab
 from labml.configs import BaseConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs

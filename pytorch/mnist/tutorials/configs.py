@@ -162,6 +162,9 @@ def main():
     experiment.start()
     conf.run()
 
+    # save the model
+    experiment.save_checkpoint()
+
 
 if __name__ == '__main__':
     main()
