@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.utils.data
 
 from labml import experiment, lab
-from labml.configs import BaseConfigs
+from labml.configs import BaseConfigs, option
 
 from torchvision import datasets, transforms
 
@@ -48,7 +48,7 @@ def _data_loader(is_train, batch_size):
         batch_size=batch_size, shuffle=True)
 
 
-@LoaderConfigs.calc([LoaderConfigs.train_loader, LoaderConfigs.test_loader])
+@option([LoaderConfigs.train_loader, LoaderConfigs.test_loader])
 def data_loaders(c: LoaderConfigs):
     train_data = _data_loader(True, c.train_batch_size)
     test_data = _data_loader(False, c.test_batch_size)
@@ -116,7 +116,7 @@ class Configs(LoaderConfigs):
             self.test()
 
 
-@Configs.calc(Configs.device)
+@option(Configs.device)
 def get_device(c: Configs):
     is_cuda = c.use_cuda and torch.cuda.is_available()
     if not is_cuda:
@@ -131,24 +131,24 @@ def get_device(c: Configs):
             return torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def model(c: Configs):
     m: Net = Net()
     m.to(c.device)
     return m
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def sgd_optimizer(c: Configs):
     return optim.SGD(c.model.parameters(), lr=c.learning_rate, momentum=c.momentum)
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), lr=c.learning_rate)
 
 
-@Configs.calc(Configs.set_seed)
+@option(Configs.set_seed)
 def set_seed(c: Configs):
     torch.manual_seed(c.seed)
 

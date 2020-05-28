@@ -7,6 +7,7 @@ import torch.nn.functional as F
 
 from labml import experiment
 from labml.helpers.pytorch.datasets.cifar10 import CIFAR10Configs
+from labml.configs import option
 from pytorch.mnist.lab_latest import Configs as MNISTExperimentConfigs
 
 
@@ -38,7 +39,7 @@ class Configs(CIFAR10Configs, MNISTExperimentConfigs):
     dataset_name = 'CIFAR10'
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def cifar10_model(c: Configs):
     m: Net = Net()
     m.to(c.device)

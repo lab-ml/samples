@@ -6,6 +6,7 @@ import torch.optim as optim
 import torch.utils.data
 
 from labml import tracker, monit, experiment
+from labml.configs import option
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
@@ -119,34 +120,34 @@ class Configs(MNISTConfigs, DeviceConfigs, TrainingLoopConfigs):
                 pytorch_utils.store_model_indicators(self.model)
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def model(c: Configs):
     m: Net = Net()
     m.to(c.device)
     return m
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def sgd_optimizer(c: Configs):
     return optim.SGD(c.model.parameters(), lr=c.learning_rate, momentum=c.momentum)
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), lr=c.learning_rate)
 
 
-@Configs.calc(Configs.set_seed)
+@option(Configs.set_seed)
 def set_seed(c: Configs):
     torch.manual_seed(c.seed)
 
 
-@Configs.calc(Configs.loop_count)
+@option(Configs.loop_count)
 def loop_count(c: Configs):
     return c.epochs * len(c.train_loader)
 
 
-@Configs.calc(Configs.loop_step)
+@option(Configs.loop_step)
 def loop_step(c: Configs):
     return len(c.train_loader)
 

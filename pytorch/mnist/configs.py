@@ -5,9 +5,9 @@ import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
 
-import labml
-from labml import monit, tracker, loop, experiment, logger
-from labml.configs import BaseConfigs
+from labml import lab
+from labml import monit, tracker, experiment, logger
+from labml.configs import BaseConfigs, option
 from labml.logger import Text
 from labml.utils import pytorch as pytorch_utils
 
@@ -64,7 +64,7 @@ class MNISTLoop:
             # Add training loss to the logger.
             # The logger will queue the values and output the mean
             tracker.add({'train.loss': loss})
-            loop.add_global_step()
+            tracker.add_global_step()
 
             # Print output to the console
             if i % self.log_interval == 0:
@@ -96,7 +96,7 @@ class MNISTLoop:
 
     def loop(self):
         # Loop through the monitored iterator
-        for epoch in loop.loop(range(0, self.__epochs)):
+        for epoch in monit.loop(range(0, self.__epochs)):
             self._train()
             self._test()
 
@@ -157,7 +157,7 @@ class Configs(LoopConfigs, LoaderConfigs):
     not_used: bool = 10
 
 
-@Configs.calc(Configs.device)
+@option(Configs.device)
 def device(c: Configs):
     is_cuda = c.use_cuda and torch.cuda.is_available()
     if not is_cuda:
@@ -183,7 +183,7 @@ def _data_loader(is_train, batch_size):
         batch_size=batch_size, shuffle=True)
 
 
-@Configs.calc([Configs.train_loader, Configs.test_loader])
+@option([Configs.train_loader, Configs.test_loader])
 def data_loaders(c: Configs):
     train = _data_loader(True, c.batch_size)
 
@@ -192,24 +192,24 @@ def data_loaders(c: Configs):
     return train, test
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def model(c: Configs):
     m: Net = Net()
     m.to(c.device)
     return m
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def sgd_optimizer(c: Configs):
     return optim.SGD(c.model.parameters(), lr=c.learning_rate, momentum=c.momentum)
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), lr=c.learning_rate)
 
 
-@Configs.calc(Configs.set_seed)
+@option(Configs.set_seed)
 def set_seed(c: Configs):
     torch.manual_seed(c.seed)
 
@@ -219,7 +219,7 @@ def main():
     experiment.create(name='mnist_configs', writers={'sqlite'})
     conf.optimizer = 'sgd_optimizer'
     experiment.calculate_configs(conf,
-                                 None,
+                                 {},
                                  ['set_seed', 'loop'])
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()

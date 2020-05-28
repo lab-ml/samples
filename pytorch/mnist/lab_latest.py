@@ -4,6 +4,7 @@ import torch.optim as optim
 import torch.utils.data
 
 from labml import experiment
+from labml.configs import option
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.pytorch.seed import SeedConfigs
@@ -47,27 +48,27 @@ class Configs(MNISTConfigs, DeviceConfigs, SeedConfigs, TrainValidConfigs):
     accuracy_func = 'simple_accuracy'
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def model(c: Configs):
     return Net().to(c.device)
 
 
-@Configs.calc(Configs.accuracy_func)
+@option(Configs.accuracy_func)
 def simple_accuracy():
     return SimpleAccuracy()
 
 
-@Configs.calc(Configs.loss_func)
+@option(Configs.loss_func)
 def cross_entropy_loss():
     return nn.CrossEntropyLoss()
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def sgd_optimizer(c: Configs):
     return optim.SGD(c.model.parameters(), c.learning_rate, c.momentum)
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), c.learning_rate)
 

@@ -7,7 +7,9 @@ import torch.utils.data
 from labml import tracker, monit, experiment, lab
 from labml.helpers.training_loop import TrainingLoopConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
+from labml.configs import option
 from labml.utils import pytorch as pytorch_utils
+
 from torchvision import datasets, transforms
 
 
@@ -118,7 +120,7 @@ def _data_loader(is_train, batch_size):
         batch_size=batch_size, shuffle=True)
 
 
-@Configs.calc([Configs.train_loader, Configs.test_loader])
+@option([Configs.train_loader, Configs.test_loader])
 def data_loaders(c: Configs):
     train = _data_loader(True, c.batch_size)
     test = _data_loader(False, c.test_batch_size)
@@ -126,34 +128,34 @@ def data_loaders(c: Configs):
     return train, test
 
 
-@Configs.calc(Configs.model)
+@option(Configs.model)
 def model(c: Configs):
     m: Net = Net()
     m.to(c.device)
     return m
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def sgd_optimizer(c: Configs):
     return optim.SGD(c.model.parameters(), lr=c.learning_rate, momentum=c.momentum)
 
 
-@Configs.calc(Configs.optimizer)
+@option(Configs.optimizer)
 def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), lr=c.learning_rate)
 
 
-@Configs.calc(Configs.set_seed)
+@option(Configs.set_seed)
 def set_seed(c: Configs):
     torch.manual_seed(c.seed)
 
 
-@Configs.calc(Configs.loop_count)
+@option(Configs.loop_count)
 def loop_count(c: Configs):
     return c.epochs * len(c.train_loader)
 
 
-@Configs.calc(Configs.loop_step)
+@option(Configs.loop_step)
 def loop_step(c: Configs):
     return len(c.train_loader)
 

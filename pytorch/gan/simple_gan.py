@@ -6,7 +6,7 @@ import torch.utils.data
 from torchvision import datasets, transforms
 
 from labml import tracker, monit, experiment, lab
-from labml.configs import BaseConfigs
+from labml.configs import BaseConfigs, option
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.training_loop import TrainingLoopConfigs
 
@@ -211,37 +211,37 @@ class Configs(DeviceConfigs, TrainingLoopConfigs, LoaderConfigs):
     main: GAN
 
 
-@Configs.calc(Configs.generator)
+@option(Configs.generator)
 def set_generator(c: Configs):
     return Generator().to(c.device)
 
 
-@Configs.calc(Configs.discriminator)
+@option(Configs.discriminator)
 def set_discriminator(c: Configs):
     return Discriminator().to(c.device)
 
 
-@Configs.calc(Configs.optimizer_G)
+@option(Configs.optimizer_G)
 def generator_optimizer(c: Configs):
     return optim.Adam(c.generator.parameters(), lr=c.lr_G, betas=c.beta_G)
 
 
-@Configs.calc(Configs.optimizer_D)
+@option(Configs.optimizer_D)
 def discriminator_optimizer(c: Configs):
     return optim.Adam(c.discriminator.parameters(), lr=c.lr_D, betas=c.beta_D)
 
 
-@Configs.calc(Configs.set_seed)
+@option(Configs.set_seed)
 def set_seed(c: Configs):
     torch.manual_seed(c.seed)
 
 
-@Configs.calc(Configs.loop_count)
+@option(Configs.loop_count)
 def loop_count(c: Configs):
     return c.epochs * len(c.train_loader)
 
 
-@Configs.calc(Configs.loop_step)
+@option(Configs.loop_step)
 def loop_step(c: Configs):
     return len(c.train_loader)
 
@@ -258,7 +258,7 @@ def _data_loader(is_train, batch_size):
         batch_size=batch_size, shuffle=True, drop_last=True)
 
 
-@Configs.calc([Configs.train_loader, Configs.test_loader])
+@option([Configs.train_loader, Configs.test_loader])
 def data_loaders(c: Configs):
     train = _data_loader(True, c.batch_size)
     test = _data_loader(False, c.test_batch_size)
@@ -271,7 +271,7 @@ def main():
     experiment.create(name='mnist_gan', writers={'sqlite'})
     experiment.calculate_configs(conf,
                                  {},
-                                 run_order=['set_seed', 'main'])
+                                 ['set_seed', 'main'])
     experiment.start()
     conf.main()
 
