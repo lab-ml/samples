@@ -1,8 +1,11 @@
 matplotlib>=3.0.3
 numpy>=1.16.1
-labml>=0.4.10
+labml>=0.4.14
 tensorflow?=2.0.0
 torchvision>=0.5.0
 torch>=1.4.0
-labml-dashboard>=0.4.7
-scikit-learn
+scikit-learn>=0.22.2.post1
+
+sklearn>=0.0
+tensorflow>=2.1.0
+pandas>=0.24.2
