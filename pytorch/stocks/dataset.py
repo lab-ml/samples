@@ -89,6 +89,11 @@ class MinutelyDataset(Dataset):
         self.y_std = self.y.std().item()
         self.y_mean = self.y.mean().item()
 
+        tracker.set_tensor("*.ref", is_once=True)
+        tracker.set_tensor("*.target", is_once=True)
+        tracker.set_tensor("*.strike_low", is_once=True)
+        tracker.set_tensor("*.strike_high", is_once=True)
+
     def __len__(self):
         return self.data.shape[0]
 
@@ -100,10 +105,6 @@ class MinutelyDataset(Dataset):
                 'target': self.y[idx]}
 
     def save_artifacts(self):
-        tracker.set_tensor(".ref", is_once=True)
-        tracker.set_tensor(".target", is_once=True)
-        tracker.set_tensor(".strike_low", is_once=True)
-        tracker.set_tensor(".strike_high", is_once=True)
         tracker.save({'.target': self.y,
                       '.ref': self.reference,
                       '.strike_low': self.strike_low,

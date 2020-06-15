@@ -15,10 +15,10 @@ class StocksBatchStep(BatchStep):
         self.optimizer = optimizer
         self.model = model
 
-        tracker.set_histogram(".loss", is_print=True)
+        tracker.set_histogram("*.loss", is_print=True)
 
         if self.optimizer is None:
-            tracker.set_tensor('.output')
+            tracker.set_tensor('*.output')
 
     def log_stats(self, stats: any):
         if self.optimizer is None:
