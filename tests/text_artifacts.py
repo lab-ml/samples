@@ -22,7 +22,7 @@ class Configs(BaseConfigs):
 def main():
     conf = Configs()
     experiment.create(name='test_artifacts', writers={'sqlite'})
-    experiment.calculate_configs(conf, 'run')
+    experiment.configs(conf, 'run')
     experiment.start()
     conf.run()
 

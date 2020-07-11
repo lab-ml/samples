@@ -167,7 +167,7 @@ def search(conf: Configs):
     tracker.set_global_step(0)
 
     experiment.create(name='mnist_hyperparam_tuning')
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))

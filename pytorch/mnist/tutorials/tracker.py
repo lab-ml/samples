@@ -152,7 +152,7 @@ def main():
     experiment.create(name='tracker')
 
     # experiment configs
-    experiment.calculate_configs(configs)
+    experiment.configs(configs)
 
     # pyTorch model
     experiment.add_pytorch_models(dict(model=model))

@@ -269,7 +269,7 @@ def data_loaders(c: Configs):
 def main():
     conf = Configs()
     experiment.create(name='mnist_gan', writers={'sqlite'})
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  ['set_seed', 'main'])
     experiment.start()

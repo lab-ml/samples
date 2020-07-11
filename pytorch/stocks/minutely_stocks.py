@@ -105,7 +105,7 @@ def main():
     conf.activation = 'relu'
     conf.dropout = 0.1
     conf.train_batch_size = 32
-    experiment.calculate_configs(conf, 'run')
+    experiment.configs(conf, 'run')
 
     experiment.start()
     with tracker.namespace('valid'):

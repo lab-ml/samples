@@ -218,7 +218,7 @@ def main():
     conf = Configs()
     experiment.create(name='mnist_configs', writers={'sqlite'})
     conf.optimizer = 'sgd_optimizer'
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  ['set_seed', 'loop'])
     experiment.add_pytorch_models(dict(model=conf.model))

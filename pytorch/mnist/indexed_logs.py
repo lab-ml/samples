@@ -156,7 +156,7 @@ def main():
     conf = Configs()
     experiment.create(name='mnist_indexed_logs', writers={'sqlite'})
     conf.optimizer = 'adam_optimizer'
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))

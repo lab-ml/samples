@@ -208,7 +208,7 @@ def data_loaders(c: Configs):
 def main():
     conf = Configs()
     experiment.create(name='rnn', writers={'sqlite', 'tensorboard'})
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  run_order=['set_seed', 'main'])
     experiment.start()

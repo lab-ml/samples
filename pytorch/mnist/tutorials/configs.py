@@ -156,7 +156,7 @@ def set_seed(c: Configs):
 def main():
     conf = Configs()
     experiment.create(name='configs')
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {'optimizer': 'sgd_optimizer'},
                                  ['set_seed', 'run'])
     experiment.start()

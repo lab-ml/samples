@@ -164,7 +164,7 @@ def main():
     conf = Configs()
     conf.optimizer = 'adam_optimizer'
     experiment.create(name='mnist_v1')
-    experiment.calculate_configs(conf,
+    experiment.configs(conf,
                                  {},
                                  ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))
