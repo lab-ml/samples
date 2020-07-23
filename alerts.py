@@ -14,5 +14,5 @@ experiment.configs(configs)
 experiment.start()
 
 for y_i in y:
-    tracker.save({'y_i': y_i})
+    tracker.save({'y': y_i})
     tracker.add_global_step()
