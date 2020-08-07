@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import experiment
+from labml import experiment, lab
 from labml.configs import option
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
@@ -77,9 +77,7 @@ def main():
     conf = Configs()
     experiment.create(name='mnist_latest')
     conf.optimizer = 'adam_optimizer'
-    experiment.configs(conf,
-                                 {},
-                                 ['set_seed', 'run'])
+    experiment.configs(conf, 'set_seed', 'run')
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()
     conf.run()
