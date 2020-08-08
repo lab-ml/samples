@@ -3,7 +3,7 @@ from labml import tracker, experiment, lab
 
 lab.configure({
     'web_api': {
-        'url': 'https://api.lab-ml.com/api/v1/track?labml_token=67783400797e4068a0d2eb276fb82c9a&channel=training',
+        'url': 'https://api.lab-ml.com/api/v1/track?labml_token=YOUR_LABML_TOEKN&channel=YOUR_SLACK_CHANNEL',
         'frequency': 10,
         'verify_connection': True
     }
