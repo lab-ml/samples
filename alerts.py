@@ -2,11 +2,7 @@ import numpy as np
 from labml import tracker, experiment, lab
 
 lab.configure({
-    'web_api': {
-        'url': 'https://api.lab-ml.com/api/v1/track?labml_token=YOUR_LABML_TOEKN&channel=YOUR_SLACK_CHANNEL',
-        'frequency': 10,
-        'verify_connection': True
-    }
+    'web_api': 'https://api.lab-ml.com/api/v1/track?labml_token=YOUR_LABML_TOEKN&channel=YOUR_SLACK_CHANNEL',
 })
 
 configs = {
