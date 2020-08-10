@@ -35,7 +35,8 @@ class SimpleAccuracy:
         return pred.eq(target).sum().item()
 
 
-class Configs(MNISTConfigs, SeedConfigs, TrainValidConfigs):
+class Configs(MNISTConfigs, TrainValidConfigs):
+    set_seed = SeedConfigs()
     device: torch.device = DeviceConfigs()
     epochs: int = 10
 
