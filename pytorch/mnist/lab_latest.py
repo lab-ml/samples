@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torch.utils.data
 
 from labml import experiment
-from labml.configs import option
+from labml.configs import option, calculate
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
 from labml.helpers.pytorch.optimizer import OptimizerConfigs
@@ -42,8 +42,8 @@ class Configs(MNISTConfigs, SeedConfigs, TrainValidConfigs):
     is_save_models = True
     model: nn.Module
 
-    loss_func = 'cross_entropy_loss'
-    accuracy_func = 'simple_accuracy'
+    loss_func = 'CrossEntropyLoss'
+    accuracy_func = 'SimpleAccuracy'
 
 
 @option(Configs.model)
@@ -51,14 +51,8 @@ def model(c: Configs):
     return Net().to(c.device)
 
 
-@option(Configs.accuracy_func)
-def simple_accuracy():
-    return SimpleAccuracy()
-
-
-@option(Configs.loss_func)
-def cross_entropy_loss():
-    return nn.CrossEntropyLoss()
+calculate(Configs.accuracy_func, 'SimpleAccuracy', lambda: SimpleAccuracy())
+calculate(Configs.loss_func, 'CrossEntropyLoss', lambda: nn.CrossEntropyLoss())
 
 
 @option(Configs.optimizer)
