@@ -1,4 +1,1 @@
-web_api:
-  url: https://api.lab-ml.com/api/slack/message/53c2d2f0-5bfc-4214-873a-fe326e00ecfe
-  frequency: 60
-  verify_connection: false
+web_api: https://api.lab-ml.com/api/v1/track?labml_token=903c84fba8ca49ca9f215922833e08cf&channel=samples
