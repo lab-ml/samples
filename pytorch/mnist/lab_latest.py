@@ -1,12 +1,12 @@
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
 import torch.utils.data
 
-from labml import experiment, lab
+from labml import experiment
 from labml.configs import option
 from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
 from labml.helpers.pytorch.device import DeviceConfigs
+from labml.helpers.pytorch.optimizer import OptimizerConfigs
 from labml.helpers.pytorch.seed import SeedConfigs
 from labml.helpers.pytorch.train_valid import TrainValidConfigs
 
@@ -35,14 +35,12 @@ class SimpleAccuracy:
         return pred.eq(target).sum().item()
 
 
-class Configs(MNISTConfigs, DeviceConfigs, SeedConfigs, TrainValidConfigs):
+class Configs(MNISTConfigs, SeedConfigs, TrainValidConfigs):
+    device: torch.device = DeviceConfigs()
     epochs: int = 10
 
     is_save_models = True
     model: nn.Module
-
-    learning_rate: float = 0.01
-    momentum: float = 0.5
 
     loss_func = 'cross_entropy_loss'
     accuracy_func = 'simple_accuracy'
@@ -64,20 +62,18 @@ def cross_entropy_loss():
 
 
 @option(Configs.optimizer)
-def sgd_optimizer(c: Configs):
-    return optim.SGD(c.model.parameters(), c.learning_rate, c.momentum)
-
-
-@option(Configs.optimizer)
-def adam_optimizer(c: Configs):
-    return optim.Adam(c.model.parameters(), c.learning_rate)
+def optimizer(c: Configs):
+    opt_conf = OptimizerConfigs()
+    opt_conf.parameters = c.model.parameters()
+    return opt_conf
 
 
 def main():
     conf = Configs()
     experiment.create(name='mnist_latest')
-    conf.optimizer = 'adam_optimizer'
-    experiment.configs(conf, 'set_seed', 'run')
+    experiment.configs(conf,
+                       {'optimizer.optimizer': 'Adam'},
+                       'set_seed', 'run')
     experiment.add_pytorch_models(dict(model=conf.model))
     experiment.start()
     conf.run()
