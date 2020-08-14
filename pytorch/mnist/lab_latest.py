@@ -43,17 +43,13 @@ class Configs(MNISTConfigs, TrainValidConfigs):
     is_save_models = True
     model: nn.Module
 
-    loss_func = 'CrossEntropyLoss'
-    accuracy_func = 'SimpleAccuracy'
+    loss_func = nn.CrossEntropyLoss()
+    accuracy_func = SimpleAccuracy()
 
 
 @option(Configs.model)
 def model(c: Configs):
     return Net().to(c.device)
-
-
-calculate(Configs.accuracy_func, 'SimpleAccuracy', lambda: SimpleAccuracy())
-calculate(Configs.loss_func, 'CrossEntropyLoss', lambda: nn.CrossEntropyLoss())
 
 
 @option(Configs.optimizer)
