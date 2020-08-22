@@ -95,8 +95,6 @@ class Configs(TrainingLoopConfigs, DeviceConfigs):
         tracker.add({'valid.accuracy': correct / len(self.test_loader.dataset)})
 
     def run(self):
-        pytorch_utils.add_model_indicators(self.model)
-
         tracker.set_queue("train.loss", 20, True)
         tracker.set_histogram("valid.loss", True)
         tracker.set_scalar("valid.accuracy", True)

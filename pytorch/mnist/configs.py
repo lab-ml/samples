@@ -45,8 +45,6 @@ class MNISTLoop:
         self.__log_new_line_interval = c.log_new_line_interval
 
     def startup(self):
-        pytorch_utils.add_model_indicators(self.model)
-
         tracker.set_queue("train.loss", 20, True)
         tracker.set_histogram("valid.loss", True)
         tracker.set_scalar("valid.accuracy", True)
