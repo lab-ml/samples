@@ -1,1 +1,1 @@
-web_api: http://127.0.0.1:5000/api/v1/track?labml_token=f2485ff230a04e96b58bc40764085e31&channel=app-updates-test
+web_api:  https://api.lab-ml.com/api/v1/track?labml_token=903c84fba8ca49ca9f215922833e08cf&channel=app-updates-test
