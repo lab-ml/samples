@@ -117,8 +117,6 @@ class RNN:
         pytorch_utils.store_model_indicators(self.encoder)
 
     def __call__(self):
-        pytorch_utils.add_model_indicators(self.encoder)
-
         for _ in self.loop:
             self._train()
             self._test()
