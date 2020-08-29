@@ -15,8 +15,8 @@ y = np.sin(2 * np.pi * configs['f'] * (x / configs['fs']))
 
 experiment.create(name='sin_wave')
 experiment.configs(configs)
-experiment.start()
 
-for y_i in y:
-    tracker.save({'loss': y_i, 'noisy': y_i + np.random.normal(0, 10, 100)})
-    tracker.add_global_step()
+with experiment.start():
+    for y_i in y:
+        tracker.save({'loss': y_i, 'noisy': y_i + np.random.normal(0, 10, 100)})
+        tracker.add_global_step()
