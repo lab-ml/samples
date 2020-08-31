@@ -5,8 +5,8 @@ import torch.optim as optim
 import torch.utils.data
 
 from labml import tracker, monit, experiment, lab
-from labml.helpers.training_loop import TrainingLoopConfigs
-from labml.helpers.pytorch.device import DeviceConfigs
+from labml_helpers.training_loop import TrainingLoopConfigs
+from labml_helpers.device import DeviceConfigs
 from labml.configs import option
 from labml.utils import pytorch as pytorch_utils
 

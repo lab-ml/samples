@@ -7,9 +7,9 @@ import torch.utils.data
 
 from labml import tracker, monit, experiment
 from labml.configs import option
-from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
-from labml.helpers.pytorch.device import DeviceConfigs
-from labml.helpers.training_loop import TrainingLoopConfigs
+from labml_helpers.datasets.mnist import MNISTConfigs
+from labml_helpers.device import DeviceConfigs
+from labml_helpers.training_loop import TrainingLoopConfigs
 from labml.utils import pytorch as pytorch_utils
 
 

@@ -10,8 +10,8 @@ from sklearn.metrics import f1_score
 
 from labml import tracker, monit, experiment, lab
 from labml.configs import BaseConfigs
-from labml.helpers.pytorch.device import DeviceConfigs
-from labml.helpers.training_loop import TrainingLoopConfigs
+from labml_helpers.device import DeviceConfigs
+from labml_helpers.training_loop import TrainingLoopConfigs
 from labml.utils import pytorch as pytorch_utils
 from labml.utils.data.pytorch import CsvDataset
 

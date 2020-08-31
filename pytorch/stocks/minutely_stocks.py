@@ -3,8 +3,8 @@ from typing import Tuple, List
 import torch
 from labml import experiment, tracker
 from labml.configs import option, calculate
-from labml.helpers.pytorch.device import DeviceConfigs
-from labml.helpers.pytorch.train_valid import TrainValidConfigs
+from labml_helpers.device import DeviceConfigs
+from labml_helpers.train_valid import TrainValidConfigs
 from torch import nn
 from torch.utils.data import DataLoader
 

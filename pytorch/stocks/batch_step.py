@@ -2,8 +2,8 @@ from typing import Optional, Callable
 
 import torch
 from labml import tracker
-from labml.helpers.pytorch.module import Module
-from labml.helpers.pytorch.train_valid import BatchStep
+from labml_helpers.module import Module
+from labml_helpers.train_valid import BatchStep
 
 
 class StocksBatchStep(BatchStep):

@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from labml import experiment
-from labml.helpers.pytorch.datasets.cifar10 import CIFAR10Configs
+from labml_helpers.datasets.cifar10 import CIFAR10Configs
 from labml.configs import option
 from pytorch.mnist.lab_latest import Configs as MNISTExperimentConfigs
 
