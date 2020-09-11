@@ -4,11 +4,11 @@ import torch.utils.data
 
 from labml import experiment
 from labml.configs import option, calculate
-from labml.helpers.pytorch.datasets.mnist import MNISTConfigs
-from labml.helpers.pytorch.device import DeviceConfigs
-from labml.helpers.pytorch.optimizer import OptimizerConfigs
-from labml.helpers.pytorch.seed import SeedConfigs
-from labml.helpers.pytorch.train_valid import TrainValidConfigs
+from labml_helpers.datasets.mnist import MNISTConfigs
+from labml_helpers.device import DeviceConfigs
+from labml_helpers.optimizer import OptimizerConfigs
+from labml_helpers.seed import SeedConfigs
+from labml_helpers.train_valid import TrainValidConfigs
 
 
 class Net(nn.Module):

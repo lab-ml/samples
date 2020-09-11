@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 import torch
-from labml.helpers.pytorch.module import Module
+from labml_helpers.module import Module
 from torch import nn
 
 from pytorch.stocks import CandleIdx
