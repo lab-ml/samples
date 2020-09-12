@@ -160,16 +160,10 @@ class GAN:
             generator_loss.backward()
             self.optimizer_G.step()
 
-            tracker.add(G_Loss=generator_loss.item())
-            tracker.add(D_Loss=discriminator_loss.item())
+            tracker.save({'loss.generator': generator_loss.item(), 'loss.discriminator': discriminator_loss.item()})
             tracker.add_global_step()
 
-        for j in range(1, 10):
-            img = fake_images[j].squeeze()
-            tracker.add('generated', img)
-
     def __call__(self):
-        tracker.set_image('generated')
         for _ in self.loop:
             self._train()
 
@@ -268,12 +262,12 @@ def data_loaders(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(name='mnist_gan', writers={'sqlite'})
+    experiment.create(name='mnist_gan', comment='test')
     experiment.configs(conf,
-                                 {},
-                                 ['set_seed', 'main'])
-    experiment.start()
-    conf.main()
+                       {},
+                       ['set_seed', 'main'])
+    with experiment.start():
+        conf.main()
 
 
 if __name__ == '__main__':
