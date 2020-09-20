@@ -1,14 +1,14 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.data
-
-from labml import experiment
-from labml.configs import option, calculate
 from labml_helpers.datasets.mnist import MNISTConfigs
 from labml_helpers.device import DeviceConfigs
 from labml_helpers.optimizer import OptimizerConfigs
 from labml_helpers.seed import SeedConfigs
 from labml_helpers.train_valid import TrainValidConfigs
+
+from labml import experiment
+from labml.configs import option
 
 
 class Net(nn.Module):
@@ -61,7 +61,7 @@ def optimizer(c: Configs):
 
 def main():
     conf = Configs()
-    experiment.create(name='mnist_latest')
+    experiment.create(name='mnist_labml_helpers')
     experiment.configs(conf,
                        {'optimizer.optimizer': 'Adam'},
                        'set_seed', 'run')

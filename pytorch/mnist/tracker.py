@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import lab, tracker, experiment, monit, logger
+from labml import lab, tracker, experiment, logger
 
 from torchvision import datasets, transforms
 
@@ -29,7 +29,7 @@ class Net(nn.Module):
 
 def train(model, optimizer, train_loader, device, train_log_interval):
     model.train()
-    for batch_idx, (data, target) in monit.enum("Train", train_loader):
+    for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
 
         optimizer.zero_grad()
@@ -38,8 +38,8 @@ def train(model, optimizer, train_loader, device, train_log_interval):
         loss.backward()
         optimizer.step()
 
-        tracker.add({'train.loss': loss})
         tracker.add_global_step()
+        tracker.add({'loss.train': loss})
 
         if batch_idx % train_log_interval == 0:
             tracker.save()
@@ -50,7 +50,7 @@ def test(model, test_loader, device):
     test_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in monit.iterate("test", test_loader):
+        for data, target in test_loader:
             data, target = data.to(device), target.to(device)
 
             output = model(data)
@@ -62,12 +62,15 @@ def test(model, test_loader, device):
     test_loss /= len(test_loader.dataset)
     test_accuracy = 100. * correct / len(test_loader.dataset)
 
-    tracker.add({'valid.loss': test_loss})
-    tracker.add({'valid.accuracy': test_accuracy})
-    tracker.save()
+    tracker.save({'loss.valid': test_loss, 'accuracy.valid': test_accuracy})
 
 
 def main():
+    # set indicator types
+    tracker.set_queue('loss.train', 20, True)
+    tracker.set_histogram('loss.valid', True)
+    tracker.set_scalar('accuracy.valid', True)
+
     epochs = 10
 
     train_batch_size = 64
@@ -124,21 +127,38 @@ def main():
     # set seeds
     torch.manual_seed(seed)
 
-    # set metrics types
-    tracker.set_queue("train.loss", 20, True)
-    tracker.set_histogram("valid.loss", True)
-    tracker.set_scalar("valid.accuracy", True)
+    # only for logging purposes
+    configs = {
+        'epochs': epochs,
+        'train_batch_size': train_batch_size,
+        'test_batch_size': test_batch_size,
+        'use_cuda': use_cuda,
+        'cuda_device': cuda_device,
+        'seed': seed,
+        'train_log_interval': train_log_interval,
+        'learning_rate': learning_rate,
+        'device': device,
+        'train_loader': train_loader,
+        'test_loader': test_loader,
+        'model': model,
+        'optimizer': optimizer,
+    }
 
     # create the experiment
-    experiment.create(name='tracker')
-    experiment.add_pytorch_models(dict(model=model))
-    experiment.start()
+    experiment.create(name='mnist_labml_tracker')
 
-    # training loop
-    for _ in monit.loop(range(1, epochs + 1)):
-        train(model, optimizer, train_loader, device, train_log_interval)
-        test(model, test_loader, device)
-        logger.log()
+    # experiment configs
+    experiment.configs(configs)
+
+    # pyTorch model
+    experiment.add_pytorch_models(dict(model=model))
+
+    with experiment.start():
+        # training loop
+        for epoch in range(1, epochs + 1):
+            train(model, optimizer, train_loader, device, train_log_interval)
+            test(model, test_loader, device)
+            logger.log()
 
     # save the model
     experiment.save_checkpoint()
