@@ -24,7 +24,7 @@ sklearn: ## SKLearn sample
 	python samples/scikitlearn/scikit-learn.py
 
 docs: ## Render annotated HTML
-	python ../../pylit/pylit.py --remove_empty_sections -s ../../pylit/pylit_docs.css -t ../../pylit/template_docs.html -d html -w samples
+	python ../../pylit/pylit.py --remove_empty_sections -s ../../pylit/pylit_docs.css -t ../../pylit/template_samples.html -d html -w samples
 
 pages: ## Copy to lab-ml site
 	@cd ../lab-ml.github.io; git pull

@@ -3,13 +3,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
+from torchvision import datasets, transforms
 
 from labml import lab, tracker, experiment, logger
 
-from torchvision import datasets, transforms
-
 
 class Net(nn.Module):
+    """
+    This is the simple convolutional neural network we use for this sample
+    """
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)
@@ -28,62 +30,91 @@ class Net(nn.Module):
 
 
 def train(model, optimizer, train_loader, device, train_log_interval):
+    """This is the training code"""
+
+    # Change the mode of the model to train
     model.train()
+
+    # Iterate through the batches
     for batch_idx, (data, target) in enumerate(train_loader):
+        # Move data and target labels to the device
         data, target = data.to(device), target.to(device)
 
-        optimizer.zero_grad()
+        # Run the model
         output = model(data)
+        # Calculate the cross entropy loss
         loss = F.cross_entropy(output, target)
+
+        # Gradient descent
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
+        # **Increment the global step**
         tracker.add_global_step()
-        tracker.add({'loss.train': loss})
+        # **Store stats in the tracker**
+        tracker.save({'loss.train': loss})
 
+        # Only save stats on intervals.
         if batch_idx % train_log_interval == 0:
+            # **Save added stats**
             tracker.save()
 
 
-def test(model, test_loader, device):
+def validate(model, test_loader, device):
+    """This is the validation code"""
+
+    # Switch the model
     model.eval()
+
     test_loss = 0
     correct = 0
+
+    # No need to calculate gradients
     with torch.no_grad():
+        # Loop through batches
         for data, target in test_loader:
+            # Move data and target labels to device
             data, target = data.to(device), target.to(device)
 
+            # Run the model
             output = model(data)
+            # Calculate the cross entropy loss
             test_loss += F.cross_entropy(output, target,
                                          reduction='sum').item()
+
+            # Get the predictions
             pred = output.argmax(dim=1, keepdim=True)
+            # Find how many samples were correctly classified
             correct += pred.eq(target.view_as(pred)).sum().item()
 
+    # Compute the average loss
     test_loss /= len(test_loader.dataset)
+    # Compute the accuracy
     test_accuracy = 100. * correct / len(test_loader.dataset)
 
+    # **Save stats**
     tracker.save({'loss.valid': test_loss, 'accuracy.valid': test_accuracy})
 
 
 def main():
-    # set indicator types
+    # Set the types of the stats/indicators.
+    # They default to scalars if not specified
     tracker.set_queue('loss.train', 20, True)
     tracker.set_histogram('loss.valid', True)
     tracker.set_scalar('accuracy.valid', True)
 
+    # Configurations
     epochs = 10
-
     train_batch_size = 64
     test_batch_size = 1000
-
     use_cuda = True
     cuda_device = 0
     seed = 5
     train_log_interval = 10
-
     learning_rate = 0.01
 
-    # get device
+    # Get device
     is_cuda = use_cuda and torch.cuda.is_available()
     if not is_cuda:
         device = torch.device("cpu")
@@ -96,13 +127,13 @@ def main():
 
             device = torch.device(f"cuda:{torch.cuda.device_count() - 1}")
 
-    # data transform
+    # Data transform
     data_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
 
-    # train loader
+    # Train loader
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST(str(lab.get_data_path()),
                        train=True,
@@ -110,24 +141,24 @@ def main():
                        transform=data_transform),
         batch_size=train_batch_size, shuffle=True)
 
-    # test loader
-    test_loader = torch.utils.data.DataLoader(
+    # Validation loader
+    valid_loader = torch.utils.data.DataLoader(
         datasets.MNIST(str(lab.get_data_path()),
                        train=False,
                        download=True,
                        transform=data_transform),
         batch_size=test_batch_size, shuffle=False)
 
-    # model
+    # Create the model
     model = Net().to(device)
 
-    # optimizer
+    # Create the optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    # set seeds
+    # Set seeds
     torch.manual_seed(seed)
 
-    # only for logging purposes
+    # Create configs object for logging
     configs = {
         'epochs': epochs,
         'train_batch_size': train_batch_size,
@@ -139,28 +170,29 @@ def main():
         'learning_rate': learning_rate,
         'device': device,
         'train_loader': train_loader,
-        'test_loader': test_loader,
+        'test_loader': valid_loader,
         'model': model,
         'optimizer': optimizer,
     }
 
-    # create the experiment
+    # Create the experiment
     experiment.create(name='mnist_labml_tracker')
 
-    # experiment configs
+    # Save configurations
     experiment.configs(configs)
 
-    # pyTorch model
+    # Set PyTorch models for checkpoint saving and loading
     experiment.add_pytorch_models(dict(model=model))
 
+    # Start and monitor the experiment
     with experiment.start():
-        # training loop
+        # Training loop
         for epoch in range(1, epochs + 1):
             train(model, optimizer, train_loader, device, train_log_interval)
-            test(model, test_loader, device)
+            validate(model, valid_loader, device)
             logger.log()
 
-    # save the model
+    # Save the models
     experiment.save_checkpoint()
 
 
