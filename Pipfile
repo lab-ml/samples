@@ -5,13 +5,14 @@ verify_ssl = true
 
 
 [packages]
-pytorch = "*"
+torch = "*"
 matplotlib = "*"
 numpy = "*"
 labml = ">=0.4.39"
 tensorflow = "*"
 torchvision = "*"
 labml_dashboard = "*"
+labml_helpers = "*"
 
 [requires]
 python_version = "3.7"
