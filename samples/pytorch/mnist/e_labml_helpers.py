@@ -3,6 +3,7 @@ import torch.nn.functional as F
 import torch.utils.data
 from labml_helpers.datasets.mnist import MNISTConfigs
 from labml_helpers.device import DeviceConfigs
+from labml_helpers.module import Module
 from labml_helpers.optimizer import OptimizerConfigs
 from labml_helpers.seed import SeedConfigs
 from labml_helpers.train_valid import TrainValidConfigs
@@ -11,7 +12,7 @@ from labml import experiment
 from labml.configs import option
 
 
-class Net(nn.Module):
+class Net(Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)
@@ -19,7 +20,7 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(4 * 4 * 50, 500)
         self.fc2 = nn.Linear(500, 10)
 
-    def forward(self, x):
+    def __call__(self, x: torch.Tensor):
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2, 2)
         x = F.relu(self.conv2(x))
