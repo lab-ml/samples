@@ -1,3 +1,5 @@
+import os
+
 import tensorflow as tf
 import torch
 import torch.nn as nn
@@ -92,7 +94,7 @@ def main():
     if not is_cuda:
         device = torch.device("cpu")
     else:
-        device = torch.device(f"cuda")
+        device = torch.device(f"cuda:0")
 
     # data transform
     data_transform = transforms.Compose([
@@ -126,7 +128,7 @@ def main():
     torch.manual_seed(seed)
 
     # tensorboard writer
-    summary_writer = tf.summary.create_file_writer('logs/mnist')
+    summary_writer = tf.summary.create_file_writer(os.path.join(os.getcwd(), 'logs/mnist'))
 
     # training loop
     for epoch in range(1, epochs + 1):

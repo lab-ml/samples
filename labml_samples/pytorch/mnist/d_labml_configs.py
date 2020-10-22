@@ -126,7 +126,7 @@ def get_device(c: Configs):
     if not is_cuda:
         return torch.device("cpu")
     else:
-        return torch.device(f"cuda")
+        device = torch.device(f"cuda:0")
 
 
 @option(Configs.model)

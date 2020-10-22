@@ -101,7 +101,7 @@ def main():
     if not is_cuda:
         device = torch.device("cpu")
     else:
-        device = torch.device(f"cuda")
+        device = torch.device(f"cuda:0")
 
     data_transform = transforms.Compose([
         transforms.ToTensor(),
