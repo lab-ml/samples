@@ -51,29 +51,29 @@ def train(epoch, model, optimizer, train_loader, device,
                   f'\tLoss: {loss.item():.6f}')
 
 
-def test(epoch, model, test_loader, device, summary_writer):
+def validate(epoch, model, valid_loader, device, summary_writer):
     model.eval()
-    test_loss = 0
+    valid_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_loader:
+        for data, target in valid_loader:
             data, target = data.to(device), target.to(device)
 
             output = model(data)
-            test_loss += F.cross_entropy(output, target, reduction='sum').item()
+            valid_loss += F.cross_entropy(output, target, reduction='sum').item()
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
-    test_loss /= len(test_loader.dataset)
-    test_accuracy = 100. * correct / len(test_loader.dataset)
+    valid_loss /= len(valid_loader.dataset)
+    valid_accuracy = 100. * correct / len(valid_loader.dataset)
 
     with summary_writer.as_default():
-        tf.summary.scalar('valid.loss', test_loss, step=epoch)
-        tf.summary.scalar('valid.accuracy', test_accuracy, step=epoch)
+        tf.summary.scalar('valid.loss', valid_loss, step=epoch)
+        tf.summary.scalar('valid.accuracy', valid_accuracy, step=epoch)
 
-    print(f'\nTest set: Average loss: {test_loss:.4f},'
-          f' Accuracy: {correct}/{len(test_loader.dataset)}'
-          f' ({test_accuracy:.0f}%)\n')
+    print(f'\nTest set: Average loss: {valid_loss:.4f},'
+          f' Accuracy: {correct}/{len(valid_loader.dataset)}'
+          f' ({valid_accuracy:.0f}%)\n')
 
 
 def main():
@@ -81,7 +81,7 @@ def main():
 
     is_save_models = True
     train_batch_size = 64
-    test_batch_size = 1000
+    valid_batch_size = 1000
 
     use_cuda = True
     seed = 5
@@ -110,13 +110,13 @@ def main():
                        transform=data_transform),
         batch_size=train_batch_size, shuffle=True)
 
-    # test loader
-    test_loader = torch.utils.data.DataLoader(
+    # valid loader
+    valid_loader = torch.utils.data.DataLoader(
         datasets.MNIST(str(lab.get_data_path()),
                        train=False,
                        download=True,
                        transform=data_transform),
-        batch_size=test_batch_size, shuffle=False)
+        batch_size=valid_batch_size, shuffle=False)
 
     # model
     model = Net().to(device)
@@ -134,7 +134,7 @@ def main():
     for epoch in range(1, epochs + 1):
         train(epoch, model, optimizer, train_loader, device,
               train_log_interval, summary_writer)
-        test(epoch, model, test_loader, device, summary_writer)
+        validate(epoch, model, valid_loader, device, summary_writer)
 
     if is_save_models:
         torch.save(model.state_dict(), "mnist_cnn.pt")

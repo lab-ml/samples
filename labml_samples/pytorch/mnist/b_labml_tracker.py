@@ -55,28 +55,28 @@ def train(model, optimizer, train_loader, device, train_log_interval):
             tracker.save()
 
 
-def validate(model, test_loader, device):
+def validate(model, valid_loader, device):
     """This is the validation code"""
 
     model.eval()
 
-    test_loss = 0
+    valid_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_loader:
+        for data, target in valid_loader:
             data, target = data.to(device), target.to(device)
 
             output = model(data)
-            test_loss += F.cross_entropy(output, target, reduction='sum').item()
+            valid_loss += F.cross_entropy(output, target, reduction='sum').item()
 
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
-    test_loss /= len(test_loader.dataset)
-    test_accuracy = 100. * correct / len(test_loader.dataset)
+    valid_loss /= len(valid_loader.dataset)
+    valid_accuracy = 100. * correct / len(valid_loader.dataset)
 
     # **Save stats**
-    tracker.save({'loss.valid': test_loss, 'accuracy.valid': test_accuracy})
+    tracker.save({'loss.valid': valid_loss, 'accuracy.valid': valid_accuracy})
 
 
 def main():
@@ -120,7 +120,7 @@ def main():
                        train=False,
                        download=True,
                        transform=data_transform),
-        batch_size=configs['test_batch_size'], shuffle=False)
+        batch_size=configs['valid_batch_size'], shuffle=False)
 
     model = Net().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs['learning_rate'])

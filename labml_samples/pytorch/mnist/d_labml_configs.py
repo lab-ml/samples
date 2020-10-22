@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 
-from labml import experiment, lab, tracker
+from labml import experiment, lab, tracker, logger
 from labml.configs import BaseConfigs, option
 
 from torchvision import datasets, transforms
@@ -30,10 +30,10 @@ class Net(nn.Module):
 
 class LoaderConfigs(BaseConfigs):
     train_batch_size: int = 64
-    test_batch_size: int = 1000
+    valid_batch_size: int = 1000
 
     train_loader: torch.utils.data.DataLoader
-    test_loader: torch.utils.data.DataLoader
+    valid_loader: torch.utils.data.DataLoader
 
 
 def _data_loader(is_train, batch_size):
@@ -48,12 +48,12 @@ def _data_loader(is_train, batch_size):
         batch_size=batch_size, shuffle=True)
 
 
-@option([LoaderConfigs.train_loader, LoaderConfigs.test_loader])
+@option([LoaderConfigs.train_loader, LoaderConfigs.valid_loader])
 def data_loaders(c: LoaderConfigs):
     train_data = _data_loader(True, c.train_batch_size)
-    test_data = _data_loader(False, c.test_batch_size)
+    valid_data = _data_loader(False, c.valid_batch_size)
 
-    return train_data, test_data
+    return train_data, valid_data
 
 
 class Configs(LoaderConfigs):
@@ -95,29 +95,30 @@ class Configs(LoaderConfigs):
                 # **✨ Save added stats**
                 tracker.save()
 
-    def test(self):
+    def validate(self):
         self.model.eval()
-        test_loss = 0
+        valid_loss = 0
         correct = 0
         with torch.no_grad():
-            for data, target in self.test_loader:
+            for data, target in self.valid_loader:
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data)
-                test_loss += F.cross_entropy(output, target, reduction='sum').item()
+                valid_loss += F.cross_entropy(output, target, reduction='sum').item()
                 pred = output.argmax(dim=1, keepdim=True)
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
-        test_loss /= len(self.test_loader.dataset)
-        test_accuracy = 100. * correct / len(self.test_loader.dataset)
+        valid_loss /= len(self.valid_loader.dataset)
+        valid_accuracy = 100. * correct / len(self.valid_loader.dataset)
 
         # **Save stats**
-        tracker.save({'loss.valid': test_loss, 'accuracy.valid': test_accuracy})
+        tracker.save({'loss.valid': valid_loss, 'accuracy.valid': valid_accuracy})
 
     def run(self):
         for epoch in range(1, self.epochs + 1):
             self.train()
-            self.test()
+            self.validate()
+            logger.log()
 
 
 @option(Configs.device)
@@ -126,7 +127,7 @@ def get_device(c: Configs):
     if not is_cuda:
         return torch.device("cpu")
     else:
-        device = torch.device(f"cuda:0")
+        return torch.device(f"cuda:0")
 
 
 @option(Configs.model)
@@ -155,8 +156,8 @@ def main():
     experiment.configs(conf,
                        {'optimizer': 'sgd_optimizer'},
                        ['set_seed', 'run'])
-    experiment.start()
-    conf.run()
+    with experiment.start():
+        conf.run()
 
     # save the model
     experiment.save_checkpoint()
