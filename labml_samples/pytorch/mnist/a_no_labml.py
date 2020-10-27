@@ -1,6 +1,5 @@
 import os
 
-import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -29,8 +28,7 @@ class Net(nn.Module):
         return self.fc2(x)
 
 
-def train(epoch, model, optimizer, train_loader, device,
-          train_log_interval, summary_writer):
+def train(epoch, model, optimizer, train_loader, device, train_log_interval):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -51,7 +49,7 @@ def train(epoch, model, optimizer, train_loader, device,
                   f'\tLoss: {loss.item():.6f}')
 
 
-def validate(epoch, model, valid_loader, device, summary_writer):
+def validate(epoch, model, valid_loader, device):
     model.eval()
     valid_loss = 0
     correct = 0
@@ -66,10 +64,6 @@ def validate(epoch, model, valid_loader, device, summary_writer):
 
     valid_loss /= len(valid_loader.dataset)
     valid_accuracy = 100. * correct / len(valid_loader.dataset)
-
-    with summary_writer.as_default():
-        tf.summary.scalar('valid.loss', valid_loss, step=epoch)
-        tf.summary.scalar('valid.accuracy', valid_accuracy, step=epoch)
 
     print(f'\nTest set: Average loss: {valid_loss:.4f},'
           f' Accuracy: {correct}/{len(valid_loader.dataset)}'
@@ -127,14 +121,10 @@ def main():
     # set seeds
     torch.manual_seed(seed)
 
-    # tensorboard writer
-    summary_writer = tf.summary.create_file_writer(os.path.join(os.getcwd(), 'logs/mnist'))
-
     # training loop
     for epoch in range(1, epochs + 1):
-        train(epoch, model, optimizer, train_loader, device,
-              train_log_interval, summary_writer)
-        validate(epoch, model, valid_loader, device, summary_writer)
+        train(epoch, model, optimizer, train_loader, device, train_log_interval)
+        validate(epoch, model, valid_loader, device)
 
     if is_save_models:
         torch.save(model.state_dict(), "mnist_cnn.pt")
