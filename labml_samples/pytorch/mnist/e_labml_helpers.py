@@ -1,15 +1,14 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.data
-from labml_helpers.datasets.mnist import MNISTConfigs
-from labml_helpers.device import DeviceConfigs
-from labml_helpers.module import Module
-from labml_helpers.optimizer import OptimizerConfigs
-from labml_helpers.seed import SeedConfigs
-from labml_helpers.train_valid import TrainValidConfigs
 
 from labml import experiment
 from labml.configs import option
+from labml_helpers.datasets.mnist import MNISTConfigs
+from labml_helpers.device import DeviceConfigs
+from labml_helpers.module import Module
+from labml_helpers.seed import SeedConfigs
+from labml_helpers.train_valid import TrainValidConfigs
 
 
 class Net(Module):
@@ -51,13 +50,6 @@ class Configs(MNISTConfigs, TrainValidConfigs):
 @option(Configs.model)
 def model(c: Configs):
     return Net().to(c.device)
-
-
-@option(Configs.optimizer)
-def optimizer(c: Configs):
-    opt_conf = OptimizerConfigs()
-    opt_conf.parameters = c.model.parameters()
-    return opt_conf
 
 
 def main():
