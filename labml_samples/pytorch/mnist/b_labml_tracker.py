@@ -47,11 +47,12 @@ def train(model, optimizer, train_loader, device, train_log_interval):
         # **✨ Increment the global step**
         tracker.add_global_step()
         # **✨ Store stats in the tracker**
-        tracker.save({'loss.train': loss})
+        tracker.add({'loss.train': loss})
 
         #
         if batch_idx % train_log_interval == 0:
             # **✨ Save added stats**
+            tracker.add(model=model)
             tracker.save()
 
 
