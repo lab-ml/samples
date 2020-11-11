@@ -41,21 +41,19 @@ class Configs(CIFAR10Configs, MNISTExperimentConfigs):
 
 @option(Configs.model)
 def cifar10_model(c: Configs):
-    m: Net = Net()
-    m.to(c.device)
-    return m
+    return Net().to(c.device)
 
 
 def main():
     conf = Configs()
-    experiment.create(name='cifar_10', writers={'sqlite'})
-    conf.optimizer = 'adam_optimizer'
+    experiment.create(name='cifar_10')
     experiment.configs(conf,
-                                 {},
-                                 ['set_seed', 'run'])
+                       {'optimizer.optimizer': 'Adam',
+                        'optimizer.learning_rate': 1e-4},
+                       ['set_seed', 'run'])
     experiment.add_pytorch_models(dict(model=conf.model))
-    experiment.start()
-    conf.run()
+    with experiment.start():
+        conf.run()
 
 
 if __name__ == '__main__':
