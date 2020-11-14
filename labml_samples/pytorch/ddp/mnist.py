@@ -19,8 +19,8 @@ def main(rank, world_size, uuid):
     experiment.configs(conf,
                        {'optimizer.optimizer': 'Adam',
                         'optimizer.learning_rate': 1e-4,
-                        'device.cuda_device': rank},
-                       ['set_seed', 'run'])
+                        'device.cuda_device': rank})
+    conf.set_seed.set()
     experiment.add_pytorch_models(dict(model=conf.model))
     with experiment.start():
         conf.run()

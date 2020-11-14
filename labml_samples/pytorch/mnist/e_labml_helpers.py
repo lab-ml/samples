@@ -55,9 +55,8 @@ def model(c: Configs):
 def main():
     conf = Configs()
     experiment.create(name='mnist_labml_helpers')
-    experiment.configs(conf,
-                       {'optimizer.optimizer': 'Adam'},
-                       'set_seed', 'run')
+    experiment.configs(conf, {'optimizer.optimizer': 'Adam'})
+    conf.set_seed.set()
     experiment.add_pytorch_models(dict(model=conf.model))
     with experiment.start():
         conf.run()

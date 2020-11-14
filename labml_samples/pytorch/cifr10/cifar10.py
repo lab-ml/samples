@@ -49,8 +49,8 @@ def main():
     experiment.create(name='cifar_10')
     experiment.configs(conf,
                        {'optimizer.optimizer': 'Adam',
-                        'optimizer.learning_rate': 1e-4},
-                       ['set_seed', 'run'])
+                        'optimizer.learning_rate': 1e-4})
+    conf.set_seed.set()
     experiment.add_pytorch_models(dict(model=conf.model))
     with experiment.start():
         conf.run()
