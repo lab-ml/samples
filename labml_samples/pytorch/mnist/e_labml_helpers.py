@@ -2,13 +2,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.data
 
-from labml import experiment
+from labml import experiment, tracker
 from labml.configs import option
+from labml.utils import pytorch as pytorch_utils
 from labml_helpers.datasets.mnist import MNISTConfigs
 from labml_helpers.device import DeviceConfigs
+from labml_helpers.metrics.accuracy import Accuracy
 from labml_helpers.module import Module
 from labml_helpers.seed import SeedConfigs
-from labml_helpers.train_valid import TrainValidConfigs
+from labml_helpers.train_valid2 import TrainValidConfigs, BatchIndex
 
 
 class Net(Module):
@@ -29,27 +31,60 @@ class Net(Module):
         return self.fc2(x)
 
 
-class SimpleAccuracy:
-    def __call__(self, output: torch.Tensor, target: torch.Tensor) -> int:
-        pred = output.argmax(dim=1)
-        return pred.eq(target).sum().item()
-
-
 class Configs(MNISTConfigs, TrainValidConfigs):
+    optimizer: torch.optim.Adam
+    model: nn.Module
     set_seed = SeedConfigs()
     device: torch.device = DeviceConfigs()
     epochs: int = 10
 
     is_save_models = True
     model: nn.Module
+    inner_iterations = 10
 
+    accuracy_func = Accuracy()
     loss_func = nn.CrossEntropyLoss()
-    accuracy_func = SimpleAccuracy()
+
+    def init(self):
+        tracker.set_queue("loss.*", 20, True)
+        tracker.set_scalar("accuracy.*", True)
+        self.state_modules = [self.accuracy_func]
+
+    def step(self, batch: any, batch_idx: BatchIndex):
+        data, target = batch[0].to(self.device), batch[1].to(self.device)
+
+        if self.mode.is_train:
+            tracker.add_global_step(len(data))
+
+        with self.mode.update(is_log_activations=batch_idx.is_last):
+            output = self.model(data)
+
+        loss = self.loss_func(output, target)
+        self.accuracy_func(output, target)
+        tracker.add("loss.", loss)
+
+        if self.mode.is_train:
+            loss.backward()
+
+            self.optimizer.step()
+            if batch_idx.is_last:
+                pytorch_utils.store_model_indicators(self.model)
+            self.optimizer.zero_grad()
+
+        tracker.save()
 
 
 @option(Configs.model)
 def model(c: Configs):
     return Net().to(c.device)
+
+
+@option(Configs.optimizer)
+def _optimizer(c: Configs):
+    from labml_helpers.optimizer import OptimizerConfigs
+    opt_conf = OptimizerConfigs()
+    opt_conf.parameters = c.model.parameters()
+    return opt_conf
 
 
 def main():

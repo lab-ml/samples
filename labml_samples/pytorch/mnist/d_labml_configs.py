@@ -3,11 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
+from torchvision import datasets, transforms
 
 from labml import experiment, lab, tracker, logger
 from labml.configs import BaseConfigs, option
-
-from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -69,8 +68,6 @@ class Configs(LoaderConfigs):
     learning_rate: float = 0.01
     momentum: float = 0.5
     optimizer: optim.Adam = 'adam_optimizer'
-
-    set_seed: int
 
     train_log_interval = 10
 
@@ -145,15 +142,13 @@ def adam_optimizer(c: Configs):
     return optim.Adam(c.model.parameters(), lr=c.learning_rate)
 
 
-@option(Configs.set_seed)
-def set_seed(c: Configs):
-    torch.manual_seed(c.seed)
-
-
 def main():
     conf = Configs()
     experiment.create(name='configs')
     experiment.configs(conf, {'optimizer': 'sgd_optimizer'})
+
+    torch.manual_seed(conf.seed)
+
     with experiment.start():
         conf.run()
 

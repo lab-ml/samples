@@ -40,9 +40,6 @@ def train(epoch, model, optimizer, train_loader, device, train_log_interval):
         optimizer.step()
 
         if batch_idx % train_log_interval == 0:
-            with summary_writer.as_default():
-                tf.summary.scalar('train.loss', loss.item(), step=epoch)
-
             print(f'train epoch: {epoch}'
                   f' [{batch_idx * len(data)}/{len(train_loader.dataset)}'
                   f' ({100. * batch_idx / len(train_loader):.0f}%)]'
