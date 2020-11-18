@@ -139,8 +139,8 @@ def build_cache(*,
         dates, packets = to_numpy(df)
 
     with monit.section("Save"):
-        np.save(str(data_path / "packets.npy"), packets)
-        np.save(str(data_path / "dates.npy"), dates)
+        np.save(str(lab.get_data_path() / "packets.npy"), packets)
+        np.save(str(lab.get_data_path() / "dates.npy"), dates)
 
 
 if __name__ == '__main__':
