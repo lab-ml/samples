@@ -8,9 +8,9 @@ from labml_helpers.train_valid import TrainValidConfigs
 from torch import nn
 from torch.utils.data import DataLoader
 
-from pytorch.stocks.batch_step import StocksBatchStep
-from pytorch.stocks.dataset import MinutelyDataset
-from pytorch.stocks.model import CnnModel
+from labml_samples.pytorch.stocks.batch_step import StocksBatchStep
+from labml_samples.pytorch.stocks.dataset import MinutelyDataset
+from labml_samples.pytorch.stocks.model import CnnModel
 
 
 class Configs(DeviceConfigs, TrainValidConfigs):
@@ -38,7 +38,7 @@ def train_loader(c: Configs):
 
 
 @option(Configs.valid_loader)
-def train_loader(c: Configs):
+def valid_loader(c: Configs):
     return DataLoader(c.valid_dataset,
                       batch_size=c.valid_batch_size,
                       shuffle=False)
@@ -50,7 +50,7 @@ def train_dataset(c: Configs):
 
 
 @option(Configs.valid_dataset)
-def train_dataset(c: Configs):
+def valid_dataset(c: Configs):
     return MinutelyDataset(c.validation_dates)
 
 

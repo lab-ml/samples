@@ -4,7 +4,7 @@ from labml import monit, lab
 from labml import tracker
 from torch.utils.data import Dataset
 
-from pytorch.stocks import CandleIdx
+from labml_samples.pytorch.stocks import CandleIdx
 
 
 def normalize_by_previous_day(packs: torch.Tensor):
