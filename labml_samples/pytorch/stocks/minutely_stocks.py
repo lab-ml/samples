@@ -1,57 +1,70 @@
-from typing import Tuple, List
+from typing import Tuple, List, Any
 
-import torch
-from labml import experiment, tracker
-from labml.configs import option, calculate
-from labml_helpers.device import DeviceConfigs
-from labml_helpers.train_valid import TrainValidConfigs
 from torch import nn
 from torch.utils.data import DataLoader
 
-from labml_samples.pytorch.stocks.batch_step import StocksBatchStep
-from labml_samples.pytorch.stocks.dataset import MinutelyDataset
+from labml import experiment, tracker, monit
+from labml.configs import option, calculate
+from labml_helpers.metrics.collector import Collector
+from labml_helpers.train_valid import SimpleTrainValidConfigs, BatchIndex
+from labml_samples.pytorch.stocks.dataset import MinutelyData
 from labml_samples.pytorch.stocks.model import CnnModel
 
 
-class Configs(DeviceConfigs, TrainValidConfigs):
-    epochs = 1000
+class Configs(SimpleTrainValidConfigs):
+    epochs = 32
     dropout: float
     validation_dates: int = 100
-    train_dataset: MinutelyDataset
-    valid_dataset: MinutelyDataset
+
+    loss_func = nn.MSELoss()
+
+    dataset: MinutelyData
     model: CnnModel
+
     conv_sizes: List[Tuple[int, int]]
     activation: nn.Module
-    accuracy_func = None
-    train_batch_step = 'train_stocks_batch_step'
-    valid_batch_step = 'valid_stocks_batch_step'
-    learning_rate: float = 1e-4
+
     train_batch_size: int = 32
     valid_batch_size: int = 64
 
+    output_collector = Collector('output')
 
-@option(Configs.train_loader)
-def train_loader(c: Configs):
-    return DataLoader(c.train_dataset,
-                      batch_size=c.train_batch_size,
-                      shuffle=True)
+    def initialize(self):
+        self.train_loader = DataLoader(self.dataset.train_dataset(),
+                                       batch_size=self.train_batch_size,
+                                       shuffle=True)
+        self.valid_loader = DataLoader(self.dataset.valid_dataset(),
+                                       batch_size=self.valid_batch_size,
+                                       shuffle=False)
+        self.state_modules = [self.output_collector]
+        tracker.set_tensor('output.*')
+
+    def step(self, batch: Any, batch_idx: BatchIndex):
+        self.model.train(self.mode.is_train)
+        data, target = batch['data'].to(self.device), batch['target'].to(self.device)
+        target = (target - self.model.y_mean) / self.model.y_std
+
+        if self.mode.is_train:
+            tracker.add_global_step(len(data))
+
+        output = self.model(data)
+        loss = self.loss_func(output, target)
+        tracker.add("loss.", loss)
+
+        if self.mode.is_train:
+            loss.backward()
+            self.optimizer.step()
+            self.optimizer.zero_grad()
+
+        if not self.mode.is_train:
+            self.output_collector(output * self.model.y_std + self.model.y_mean)
+
+        tracker.save()
 
 
-@option(Configs.valid_loader)
-def valid_loader(c: Configs):
-    return DataLoader(c.valid_dataset,
-                      batch_size=c.valid_batch_size,
-                      shuffle=False)
-
-
-@option(Configs.train_dataset)
-def train_dataset(c: Configs):
-    return MinutelyDataset(-c.validation_dates)
-
-
-@option(Configs.valid_dataset)
-def valid_dataset(c: Configs):
-    return MinutelyDataset(c.validation_dates)
+@option(Configs.dataset)
+def dataset(c: Configs):
+    return MinutelyData(c.validation_dates)
 
 
 @option(Configs.model)
@@ -71,45 +84,22 @@ calculate(Configs.activation, 'relu', [], lambda: nn.ReLU())
 calculate(Configs.activation, 'sigmoid', [], lambda: nn.Sigmoid())
 
 
-@option(Configs.optimizer)
-def adam_optimizer(c: Configs):
-    return torch.optim.Adam(c.model.parameters(), lr=c.learning_rate)
-
-
-@option(Configs.loss_func)
-def loss_func():
-    return nn.MSELoss()
-
-
-@option(TrainValidConfigs.train_batch_step)
-def train_stocks_batch_step(c: TrainValidConfigs):
-    return StocksBatchStep(model=c.model,
-                           optimizer=c.optimizer,
-                           loss_func=c.loss_func)
-
-
-@option(TrainValidConfigs.valid_batch_step)
-def valid_stocks_batch_step(c: TrainValidConfigs):
-    return StocksBatchStep(model=c.model,
-                           optimizer=None,
-                           loss_func=c.loss_func)
-
-
 def main():
     experiment.create()
     conf = Configs()
-    conf.learning_rate = 1e-4
-    conf.epochs = 500
-    conf.conv_sizes = [(128, 2), (256, 4)]
-    # conf.conv_sizes = [(128, 1), (256, 2)]
     conf.activation = 'relu'
     conf.dropout = 0.1
-    conf.train_batch_size = 32
-    experiment.configs(conf)
+    experiment.configs(conf,
+                       {'conv_sizes': [(128, 2), (256, 4)],
+                        'optimizer.learning_rate': 1e-4,
+                        'optimizer.optimizer': 'Adam'})
 
     experiment.start()
+
+    with monit.section('Initialize'):
+        conf.initialize()
     with tracker.namespace('valid'):
-        conf.valid_dataset.save_artifacts()
+        conf.valid_loader.dataset.save_artifacts()
     conf.run()
 
 

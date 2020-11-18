@@ -5,6 +5,7 @@ from labml import tracker
 from torch.utils.data import Dataset
 
 from labml_samples.pytorch.stocks import CandleIdx
+from labml_samples.pytorch.stocks.build_numpy_cache import build_cache
 
 
 def normalize_by_previous_day(packs: torch.Tensor):
@@ -51,18 +52,7 @@ def calculate_moving_average(data: torch.Tensor, start: int, end: int):
 
 
 class MinutelyDataset(Dataset):
-    def __init__(self, filter_last: int):
-        data_path = lab.get_data_path()
-
-        with monit.section("Cache"):
-            dates = np.load(str(data_path / "dates.npy"))
-            packets = np.load(str(data_path / "packets.npy"))
-        packets = torch.tensor(packets, dtype=torch.float)
-        if filter_last < 0:
-            dates, packets = dates[:filter_last], packets[:filter_last]
-        else:
-            dates, packets = dates[-filter_last - 1:], packets[-filter_last - 1:]
-
+    def __init__(self, dates: np.ndarray, packets: torch.Tensor):
         self.data = normalize_by_previous_day(packets)
         self.data.log_()
         mean = self.data[:, :, 0:CandleIdx.open_close].mean(dim=-1)
@@ -109,3 +99,25 @@ class MinutelyDataset(Dataset):
                       '.ref': self.reference,
                       '.strike_low': self.strike_low,
                       '.strike_high': self.strike_high})
+
+
+class MinutelyData:
+    def __init__(self, validation_dates: int, skip_cache: bool = False):
+        self.validation_dates = validation_dates
+
+        dates_cache_path = lab.get_data_path() / 'dates.npy'
+        packets_cache_path = lab.get_data_path() / 'packets.npy'
+
+        if skip_cache or not dates_cache_path.exists() or not packets_cache_path.exists():
+            with monit.section('Build cache'):
+                build_cache()
+
+        with monit.section("Cache"):
+            self.dates = np.load(str(dates_cache_path))
+            self.packets = torch.tensor(np.load(str(packets_cache_path)))
+
+    def train_dataset(self):
+        return MinutelyDataset(self.dates[:-self.validation_dates], self.packets[:-self.validation_dates])
+
+    def valid_dataset(self):
+        return MinutelyDataset(self.dates[-self.validation_dates:], self.packets[-self.validation_dates:])
