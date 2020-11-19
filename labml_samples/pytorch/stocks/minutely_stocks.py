@@ -7,7 +7,7 @@ from labml import experiment, tracker, monit
 from labml.configs import option, calculate
 from labml_helpers.metrics.collector import Collector
 from labml_helpers.train_valid import SimpleTrainValidConfigs, BatchIndex
-from labml_samples.pytorch.stocks.dataset import MinutelyData
+from labml_samples.pytorch.stocks.dataset import MinutelyData, MinutelyDataset
 from labml_samples.pytorch.stocks.model import CnnModel
 
 
@@ -19,6 +19,8 @@ class Configs(SimpleTrainValidConfigs):
     loss_func = nn.MSELoss()
 
     dataset: MinutelyData
+    train_dataset: MinutelyDataset
+    valid_dataset: MinutelyDataset
     model: CnnModel
 
     conv_sizes: List[Tuple[int, int]]
@@ -30,10 +32,12 @@ class Configs(SimpleTrainValidConfigs):
     output_collector = Collector('output')
 
     def initialize(self):
-        self.train_loader = DataLoader(self.dataset.train_dataset(),
+        self.train_dataset = self.dataset.train_dataset()
+        self.valid_dataset = self.dataset.valid_dataset()
+        self.train_loader = DataLoader(self.train_dataset,
                                        batch_size=self.train_batch_size,
                                        shuffle=True)
-        self.valid_loader = DataLoader(self.dataset.valid_dataset(),
+        self.valid_loader = DataLoader(self.valid_dataset,
                                        batch_size=self.valid_batch_size,
                                        shuffle=False)
         self.state_modules = [self.output_collector]
@@ -53,6 +57,8 @@ class Configs(SimpleTrainValidConfigs):
 
         if self.mode.is_train:
             loss.backward()
+            if batch_idx.is_last:
+                tracker.add('model', self.model)
             self.optimizer.step()
             self.optimizer.zero_grad()
 
@@ -94,13 +100,12 @@ def main():
                         'optimizer.learning_rate': 1e-4,
                         'optimizer.optimizer': 'Adam'})
 
-    experiment.start()
-
-    with monit.section('Initialize'):
-        conf.initialize()
-    with tracker.namespace('valid'):
-        conf.valid_loader.dataset.save_artifacts()
-    conf.run()
+    with experiment.start():
+        with monit.section('Initialize'):
+            conf.initialize()
+        with tracker.namespace('valid'):
+            conf.valid_dataset.save_artifacts()
+        conf.run()
 
 
 if __name__ == '__main__':

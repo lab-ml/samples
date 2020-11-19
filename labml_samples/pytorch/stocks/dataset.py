@@ -79,10 +79,10 @@ class MinutelyDataset(Dataset):
         self.y_std = self.y.std().item()
         self.y_mean = self.y.mean().item()
 
-        tracker.set_tensor("*.ref", is_once=True)
-        tracker.set_tensor("*.target", is_once=True)
-        tracker.set_tensor("*.strike_low", is_once=True)
-        tracker.set_tensor("*.strike_high", is_once=True)
+        tracker.set_tensor("ref.*", is_once=True)
+        tracker.set_tensor("target.*", is_once=True)
+        tracker.set_tensor("strike_low.*", is_once=True)
+        tracker.set_tensor("strike_high.*", is_once=True)
 
     def __len__(self):
         return self.data.shape[0]
@@ -95,10 +95,10 @@ class MinutelyDataset(Dataset):
                 'target': self.y[idx]}
 
     def save_artifacts(self):
-        tracker.save({'.target': self.y,
-                      '.ref': self.reference,
-                      '.strike_low': self.strike_low,
-                      '.strike_high': self.strike_high})
+        tracker.save({'target.': self.y,
+                      'ref.': self.reference,
+                      'strike_low.': self.strike_low,
+                      'strike_high.': self.strike_high})
 
 
 class MinutelyData:
@@ -114,7 +114,7 @@ class MinutelyData:
 
         with monit.section("Cache"):
             self.dates = np.load(str(dates_cache_path))
-            self.packets = torch.tensor(np.load(str(packets_cache_path)))
+            self.packets = torch.tensor(np.load(str(packets_cache_path)), dtype=torch.float)
 
     def train_dataset(self):
         return MinutelyDataset(self.dates[:-self.validation_dates], self.packets[:-self.validation_dates])
