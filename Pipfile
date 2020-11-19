@@ -8,11 +8,11 @@ verify_ssl = true
 torch = "*"
 matplotlib = "*"
 numpy = "*"
-labml = ">=0.4.39"
+labml = ">=0.4.62"
 tensorflow = "*"
 torchvision = "*"
 labml_dashboard = "*"
-labml_helpers = "*"
+labml_helpers = ">=0.4.62"
 
 [requires]
 python_version = "3.7"
