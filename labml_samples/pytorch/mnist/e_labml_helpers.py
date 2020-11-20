@@ -10,7 +10,7 @@ from labml_helpers.device import DeviceConfigs
 from labml_helpers.metrics.accuracy import Accuracy
 from labml_helpers.module import Module
 from labml_helpers.seed import SeedConfigs
-from labml_helpers.train_valid2 import TrainValidConfigs, BatchIndex
+from labml_helpers.train_valid import TrainValidConfigs, BatchIndex
 
 
 class Net(Module):

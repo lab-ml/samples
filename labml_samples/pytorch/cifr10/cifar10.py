@@ -6,8 +6,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from labml import experiment
-from labml_helpers.datasets.cifar10 import CIFAR10Configs
 from labml.configs import option
+from labml_helpers.datasets.cifar10 import CIFAR10Configs
 from labml_samples.pytorch.mnist.e_labml_helpers import Configs as MNISTExperimentConfigs
 
 
@@ -29,9 +29,6 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
-
-
-net = Net()
 
 
 class Configs(CIFAR10Configs, MNISTExperimentConfigs):
