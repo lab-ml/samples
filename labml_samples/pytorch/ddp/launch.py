@@ -14,7 +14,7 @@ def main():
     if 'RUN_UUID' not in os.environ:
         os.environ['RUN_UUID'] = experiment.generate_uuid()
 
-    print(sys.argv)
+    logger.log(str(sys.argv), Text.danger)
     cmd = [sys.executable, '-u', '-m', 'torch.distributed.launch', *sys.argv[1:]]
     # print(cmd)
     try:
