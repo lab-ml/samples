@@ -10,7 +10,7 @@ from labml_helpers.device import DeviceConfigs
 from labml_helpers.metrics.accuracy import Accuracy
 from labml_helpers.module import Module
 from labml_helpers.seed import SeedConfigs
-from labml_helpers.train_valid import TrainValidConfigs, BatchIndex
+from labml_helpers.train_valid import TrainValidConfigs, BatchIndex, hook_model_outputs
 
 
 class Net(Module):
@@ -48,6 +48,7 @@ class Configs(MNISTConfigs, TrainValidConfigs):
     def init(self):
         tracker.set_queue("loss.*", 20, True)
         tracker.set_scalar("accuracy.*", True)
+        hook_model_outputs(self.mode, self.model, 'model')
         self.state_modules = [self.accuracy_func]
 
     def step(self, batch: any, batch_idx: BatchIndex):
