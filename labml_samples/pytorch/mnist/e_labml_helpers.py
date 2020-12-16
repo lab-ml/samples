@@ -69,7 +69,7 @@ class Configs(MNISTConfigs, TrainValidConfigs):
 
             self.optimizer.step()
             if batch_idx.is_last:
-                pytorch_utils.store_model_indicators(self.model)
+                tracker.add('model', self.model)
             self.optimizer.zero_grad()
 
         tracker.save()
