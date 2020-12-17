@@ -13,6 +13,7 @@ analytics/
 labml
 labml_helpers
 labml_nn
+labml_remote
 .remote/scripts
 .remote/private_key
 .remote/configs.yaml
