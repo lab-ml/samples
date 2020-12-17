@@ -1,3 +1,8 @@
+"""
+Modified from https://colab.research.google.com/github/PytorchLightning/pytorch-lightning/blob/master/notebooks/01-mnist-hello-world.ipynb
+Added labml logger
+"""
+
 import pytorch_lightning as pl
 import torch
 from pytorch_lightning.metrics.functional import accuracy
@@ -85,7 +90,6 @@ class LitMNIST(pl.LightningModule):
         MNIST(str(lab.get_data_path()), train=False, download=True)
 
     def setup(self, stage=None):
-
         # Assign train/val datasets for use in dataloaders
         if stage == 'fit' or stage is None:
             mnist_full = MNIST(str(lab.get_data_path()), train=True, transform=self.transform)
@@ -106,7 +110,7 @@ class LitMNIST(pl.LightningModule):
 
 
 def main():
-    experiment.create(name='mnist_lit_lightening', writers={'sqlite', 'tensorboard', 'web_api'})
+    experiment.create(name='mnist_lit_lightening', disable_screen=True)
     model = LitMNIST()
     trainer = pl.Trainer(gpus=1, max_epochs=3, progress_bar_refresh_rate=20, logger=LabMLLighteningLogger())
     with experiment.start():

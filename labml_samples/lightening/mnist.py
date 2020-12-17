@@ -1,3 +1,7 @@
+"""
+Modified from https://colab.research.google.com/github/PytorchLightning/pytorch-lightning/blob/master/notebooks/01-mnist-hello-world.ipynb
+Added labml logger
+"""
 import pytorch_lightning as pl
 import torch
 from torch.nn import functional as F
@@ -28,8 +32,6 @@ class MNISTModel(pl.LightningModule):
 
 
 def main():
-    experiment.create(name='mnist_lightening', writers={'sqlite', 'tensorboard', 'web_api'})
-
     # Init our model
     mnist_model = MNISTModel()
 
@@ -41,7 +43,7 @@ def main():
     trainer = pl.Trainer(gpus=1, max_epochs=3, progress_bar_refresh_rate=20, logger=LabMLLighteningLogger())
 
     # Train the model ⚡
-    with experiment.start():
+    with experiment.record(name='mnist_lightening', disable_screen=True):
         trainer.fit(mnist_model, train_loader)
 
 
