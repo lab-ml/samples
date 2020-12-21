@@ -13,7 +13,7 @@ from torchvision import transforms
 from torchvision.datasets import MNIST
 
 from labml import lab, experiment
-from labml.utils.lightening import LabMLLighteningLogger
+from labml.utils.lightning import LabMLLightningLogger
 
 
 class LitMNIST(pl.LightningModule):
@@ -112,7 +112,7 @@ class LitMNIST(pl.LightningModule):
 def main():
     experiment.create(name='mnist_lit_lightening', disable_screen=True)
     model = LitMNIST()
-    trainer = pl.Trainer(gpus=1, max_epochs=3, progress_bar_refresh_rate=20, logger=LabMLLighteningLogger())
+    trainer = pl.Trainer(gpus=1, max_epochs=3, progress_bar_refresh_rate=20, logger=LabMLLightningLogger())
     with experiment.start():
         trainer.fit(model)
 
