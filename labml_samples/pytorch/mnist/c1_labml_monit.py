@@ -3,10 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
+from torchvision import datasets, transforms
 
 from labml import lab, tracker, experiment, monit, logger
-
-from torchvision import datasets, transforms
 
 
 class Net(nn.Module):
@@ -61,7 +60,7 @@ def validate(model, valid_loader, device):
 
             output = model(data)
             valid_loss += F.cross_entropy(output, target,
-                                         reduction='sum').item()
+                                          reduction='sum').item()
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
@@ -125,7 +124,7 @@ def main():
 
     # ✨ Start and monitor the experiment
     with experiment.start():
-        for _ in monit.loop(range(1, configs['epochs']  + 1)):
+        for _ in monit.loop(range(1, configs['epochs'] + 1)):
             train(model, optimizer, train_loader, device, configs['train_log_interval'])
             validate(model, valid_loader, device)
             logger.log()
